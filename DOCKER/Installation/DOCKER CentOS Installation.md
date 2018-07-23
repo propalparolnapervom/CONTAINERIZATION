@@ -48,6 +48,19 @@ sudo yum remove docker \
 ```
 
 
+### 2. Install new Docker (using the repo)
+
+#### 2.1 SEt up the repo
+Install required packages. 
+`yum-utils` provides the `yum-config-manager` utility
+`device-mapper-persistent-data` and `lvm2` are required by the `devicemapper` storage driver.
+```
+sudo yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+```
+
+#### 2.2 Install Docker CE
 
 
 
