@@ -3,12 +3,12 @@
 
 ### TUTORIALS
 
-[Docker Classroom](https://training.play-with-docker.com/)
+  - [Docker Classroom](https://training.play-with-docker.com/)
 
 
 ### USEFUL INFO
 
-[Docker Hub](https://hub.docker.com/)
+  - [Docker Hub](https://hub.docker.com/)
 
 
 
