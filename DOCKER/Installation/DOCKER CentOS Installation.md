@@ -51,8 +51,11 @@ sudo yum remove docker \
 ### 2. Install new Docker (using the repo)
 
 #### 2.1 SEt up the repo
-Install required packages. 
+
+1. Install required packages. 
+
 `yum-utils` provides the `yum-config-manager` utility
+
 `device-mapper-persistent-data` and `lvm2` are required by the `devicemapper` storage driver.
 ```
 sudo yum install -y yum-utils \
@@ -60,12 +63,79 @@ sudo yum install -y yum-utils \
   lvm2
 ```
 
+
+2. Use the following command to set up the stable repo. You always need the stable repo, even if you want to install builds from the edge or test repos as well.
+```
+sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+    
+      Loaded plugins: fastestmirror
+      adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
+      grabbing file https://download.docker.com/linux/centos/docker-ce.repo to /etc/yum.repos.d/docker-ce.repo
+      repo saved to /etc/yum.repos.d/docker-ce.repo
+```
+
+3. Optional: Enable the edge and test repos. These repos are included in the docker.repo file above but are disabled by default. You can enable them alongside the stable repository.
+```
+sudo yum-config-manager --enable docker-ce-edge
+sudo yum-config-manager --enable docker-ce-test
+```
+
+To disable:
+
+```
+sudo yum-config-manager --disable docker-ce-edge
+sudo yum-config-manager --disable docker-ce-test
+```
+
+
+
+
 #### 2.2 Install Docker CE
 
 
+1. Install the **latest version** of Docker CE, or go to the next step to install a **specific version**
+```
+sudo yum install docker-ce
 
+      ...
+      Installed:
+        docker-ce.x86_64 0:18.06.0.ce-3.el7                                                                                   
 
+      Dependency Installed:
+        audit-libs-python.x86_64 0:2.8.1-3.el7                        checkpolicy.x86_64 0:2.5-6.el7
+        container-selinux.noarch 2:2.66-1.el7                         libcgroup.x86_64 0:0.41-15.el7
+        libsemanage-python.x86_64 0:2.5-11.el7                        libtool-ltdl.x86_64 0:2.4.2-22.el7_3
+        policycoreutils-python.x86_64 0:2.5-22.el7                    python-IPy.noarch 0:0.75-6.el7
+        setools-libs.x86_64 0:3.3.8-2.el7
 
+      Complete!
+```
+
+2. To install a **specific version** of Docker CE
+  - list the available versions in the repo
+```
+yum list docker-ce --showduplicates | sort -r
+
+       * updates: mirror.mirohost.net
+      Loaded plugins: fastestmirror
+      Installed Packages
+       * extras: mirror.mirohost.net
+      docker-ce.x86_64            18.06.0.ce-3.el7                   docker-ce-stable
+      docker-ce.x86_64            18.06.0.ce-3.el7                   @docker-ce-stable
+      docker-ce.x86_64            18.03.1.ce-1.el7.centos            docker-ce-stable
+      ...
+      docker-ce.x86_64            17.03.0.ce-1.el7.centos            docker-ce-stable
+      Determining fastest mirrors
+       * base: mirror.mirohost.net
+      Available Packages
+```
+  
+  - select and install necessary version (it's `sudo yum install docker-ce-<VERSION STRING>`)
+```
+sudo yum install docker-ce-18.06.0.ce
+```
 
 
 
