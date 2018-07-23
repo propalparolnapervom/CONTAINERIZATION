@@ -3,16 +3,12 @@
 
 ### TUTORIALS
 
-**Play with Docker Classroom**
-
-Good [labs](https://training.play-with-docker.com/) to start practice part.
+[Docker Classroom](https://training.play-with-docker.com/)
 
 
 ### USEFUL INFO
 
-**Docker Hub**
-
-Find Docker Hub [here](https://hub.docker.com/)
+[Docker Hub](https://hub.docker.com/)
 
 
 
