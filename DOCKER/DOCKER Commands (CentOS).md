@@ -30,7 +30,7 @@ sudo systemctl stop docker
 
 2. Manually (if it was started via `dockerd` in foreground)
 ```
-just hit Ctl-C
+Ctrl+C
 ```
 
 **Verification**
