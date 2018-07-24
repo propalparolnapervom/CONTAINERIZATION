@@ -1,8 +1,12 @@
 
 # DOCKER COMMANDS
 
+## OVERALL INFO
 
-## Re-boot
+The docker daemon always runs as the root user.
+
+
+## RE-BOOT
 
 **Start**
 ```
