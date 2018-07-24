@@ -1,9 +1,10 @@
 
 # DOCKER COMMANDS
 
+
 ## OVERALL INFO
 
-The docker daemon always runs as the root user.
+The `docker` daemon always runs as the root user.
 
 
 ## RE-BOOT
