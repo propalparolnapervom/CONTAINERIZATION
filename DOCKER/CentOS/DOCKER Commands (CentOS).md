@@ -6,6 +6,8 @@
 
 The `docker` daemon always runs as the root user.
 
+Docker creates a new container from the image every time it runs. So no changes will be available after container booting.
+
 
 ## RE-BOOT DOCKER DAEMON
 
@@ -38,6 +40,11 @@ Ctrl+C
 Verify that `docker` is installed correctly by running the `hello-world` image.
 ```
 docker run hello-world
+
+ps -ef | grep docker
+
+      root      5648     1  3 14:27 ?        00:00:00 /usr/bin/dockerd
+      root      5654  5648  0 14:27 ?        00:00:00 docker-containerd --config /var/run/docker/containerd/containerd.toml
 ```
 
 
@@ -72,8 +79,54 @@ docker pull busybox
 
 
 
+## CONTAINERS
 
 
+**List currently running containers**
+```
+docker ps
+```
+
+**List history of running containers**
+```
+docker ps -a
+
+      CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS                          PORTS               NAMES
+      cf3638170830        busybox             "echo 'hello from bu…"   About a minute ago   Exited (0) About a minute ago                       unruffled_wright
+      1a3b01f12d75        busybox             "echo 'hello from bu…"   About a minute ago   Exited (0) About a minute ago                       cocky_jang
+      51b78eb83420        busybox             "uname -a"               11 minutes ago       Exited (0) 11 minutes ago                           elegant_meninsky
+      47f12249f648        busybox             "pwd"                    12 minutes ago       Exited (0) 12 minutes ago                           pensive_brown
+```
+
+**Run container**
+
+Run a Docker container based on specific image (busybox, for instance)
+```
+docker run busybox
+```
+
+During this process Docker client:
+      - finds the image (busybox in this case)
+      - loads up the container
+      - runs a command in that container
+      - exits
+      
+      
+**Run container and single command whithin it**
+
+So the same with some command will run that command in container
+```
+docker run busybox echo "hello from busybox"
+
+      hello from busybox
+```
+
+**Run container and multiply commands whithin it**
+
+Running the run command with the -it flags attaches us to an interactive tty in the container. 
+```
+docker run -it busybox
+```
 
 
 
