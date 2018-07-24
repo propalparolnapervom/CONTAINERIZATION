@@ -38,7 +38,7 @@ sudo vi /etc/docker/daemon.json
 
 ## 2. VIA FLAGS OF `dockerd`
 
-You can start Docker daemon with same [parameters](https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file) as awith JSON files.
+You can start Docker daemon with same [parameters](https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file) as with JSON files.
 ```
 dockerd --debug \
   --tls=true \
