@@ -77,6 +77,12 @@ docker pull busybox
 ```
 
 
+**Delete images**
+```
+docker rmi hello-world
+```
+
+
 
 
 ## CONTAINERS
@@ -88,6 +94,8 @@ docker ps
 ```
 
 **List history of running containers**
+
+All of them left on the disk, so some diskspace is wasted.
 ```
 docker ps -a
 
@@ -130,6 +138,24 @@ docker run busybox echo "hello from busybox"
 Running the run command with the -it flags attaches us to an interactive tty in the container. 
 ```
 docker run -it busybox
+```
+
+**Remove container**
+Free diskspace by removing old containers.
+
+Single one
+```
+docker rm 54f1dceca0a7
+```
+
+Multiply ones
+```
+      #Flags
+      # -q: only returns the numeric IDs
+      # -f: filters output based on conditions provided
+      # -a: show all
+      
+docker rm $(docker ps -a -q -f status=exited)
 ```
 
 
