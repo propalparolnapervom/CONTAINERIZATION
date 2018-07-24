@@ -1,8 +1,8 @@
-## DOCKER POST-INSTALLATION (CENTOS)
+# DOCKER POST-INSTALLATION (CENTOS)
 
 [Documentation](https://docs.docker.com/install/linux/linux-postinstall/)
 
-### Manage Docker as a non-root user
+## Manage Docker as a non-root user
 
 **Overall info**
 The `docker` daemon binds to a Unix socket instead of a TCP port. 
@@ -37,15 +37,15 @@ docker images
 
 
 
-### Configure Docker to start on boot
+## Configure Docker to start on boot
 
-### Use a different storage engine
+## Use a different storage engine
 
-### Configure where the Docker daemon listens for connections
+## Configure where the Docker daemon listens for connections
 
-### Enable IPv6 on the Docker daemon
+## Enable IPv6 on the Docker daemon
 
-### Troubleshooting
+## Troubleshooting
 
 
 
