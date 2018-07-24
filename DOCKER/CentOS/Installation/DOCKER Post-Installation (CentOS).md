@@ -32,7 +32,7 @@ sudo usermod -aG docker vagrant
 
 Run any command via just added user
 ```
-docker images
+docker run hello-world
 ```
 
 
