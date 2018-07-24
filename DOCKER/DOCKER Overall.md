@@ -4,6 +4,7 @@
 ### TUTORIALS
 
   - [Docker Classroom](https://training.play-with-docker.com/)
+  - [http://docker-curriculum.com/](http://docker-curriculum.com/)
 
 
 ### USEFUL INFO
