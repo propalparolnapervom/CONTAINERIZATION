@@ -15,6 +15,12 @@ If you don’t want to use `sudo` when you use the `docker` command, create a Un
 
 When the `docker` daemon starts, it makes the ownership of the Unix socket read/writable by the `docker` group.
 
+> Warning: The `docker` group grants privileges equivalent to the `root` user. For details on how this impacts security in your system, see [Docker Daemon Attack Surface](https://docs.docker.com/engine/security/security/#docker-daemon-attack-surface).
+
+
+
+
+
 
 ### Configure Docker to start on boot
 
