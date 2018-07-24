@@ -15,8 +15,10 @@ sudo systemctl stop docker
 ```
 
 **Verification**
+
 Verify that `docker` is installed correctly by running the `hello-world` image.
 ```
+sudo docker run hello-world
 ```
 
 
