@@ -9,7 +9,7 @@
 
 ### USEFUL INFO
 
-  - [Docker Hub](https://hub.docker.com/)
+  - [Docker Hub](https://hub.docker.com/) - repository of Docker images
 
 
 
