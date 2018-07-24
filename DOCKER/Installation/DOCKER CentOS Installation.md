@@ -137,7 +137,38 @@ yum list docker-ce --showduplicates | sort -r
 sudo yum install docker-ce-18.06.0.ce
 ```
 
+### 3. Start Docker
+```
+sudo systemctl start docker
+```
 
+
+### 4. Verification
+
+Verify that `docker` is installed correctly by running the `hello-world` image.
+
+```
+sudo docker run hello-world
+```
+
+
+
+
+## POST-INSTALLATION
+
+[Documentation](https://docs.docker.com/install/linux/linux-postinstall/)
+
+### Manage Docker as a non-root user
+
+### Configure Docker to start on boot
+
+### Use a different storage engine
+
+### Configure where the Docker daemon listens for connections
+
+### Enable IPv6 on the Docker daemon
+
+### Troubleshooting
 
 
 
