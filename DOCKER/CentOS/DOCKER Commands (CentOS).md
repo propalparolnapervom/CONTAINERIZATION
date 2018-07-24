@@ -106,9 +106,13 @@ docker run busybox
 ```
 
 During this process Docker client:
+
       - finds the image (busybox in this case)
+      
       - loads up the container
+      
       - runs a command in that container
+      
       - exits
       
       
