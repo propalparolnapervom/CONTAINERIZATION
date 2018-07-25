@@ -88,6 +88,7 @@ docker rmi hello-world
 
 ## CONTAINERS
 
+### LIST
 
 **List currently running containers**
 ```
@@ -106,6 +107,9 @@ docker ps -a
       51b78eb83420        busybox             "uname -a"               11 minutes ago       Exited (0) 11 minutes ago                           elegant_meninsky
       47f12249f648        busybox             "pwd"                    12 minutes ago       Exited (0) 12 minutes ago                           pensive_brown
 ```
+
+
+### RUN
 
 **Run container**
 
@@ -140,6 +144,8 @@ Running the run command with the -it flags attaches us to an interactive tty in 
 ```
 docker run -it busybox
 ```
+
+### REMOVE
 
 **Remove container**
 
