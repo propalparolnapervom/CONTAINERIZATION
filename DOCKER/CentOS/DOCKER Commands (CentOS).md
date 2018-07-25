@@ -145,13 +145,41 @@ Running the run command with the -it flags attaches us to an interactive tty in 
 docker run -it busybox
 ```
 
+**Run container in detach mode**
+```
+docker run -d prakhar1989/static-site
+
+      4fa8fb2ab6a08b03414056c170ade3aa1a4c76a01de19532e7032a9a51ec1981
+```
+
+
+
+
+### STOP
+
+Stop specific container (by its CONTAINER ID or NAMES)
+```
+docker stop my_name
+```
+
+
+
+### START
+
+Start specific container (by its CONTAINER ID or NAMES)
+```
+docker start my_name
+```
+
+
+
 ### REMOVE
 
 **Remove container**
 
 Free diskspace by removing old containers.
 
-Single one
+Single one (by its CONTAINER ID or NAMES)
 ```
 docker rm 54f1dceca0a7
 ```
@@ -168,7 +196,42 @@ docker rm $(docker ps -a -q -f status=exited)
 
 
 
+### NAMES
 
+> Name has to be unique for existing containers
+
+Name container during prior its starting
+```
+docker run --name my_first_name prakhar1989/static-site
+```
+
+Name already running container
+```
+docker rename 54e1d34e7568 my_second_name
+```
+
+
+### PORT HANDLING
+
+See port mapping for specific container (by its CONTAINER ID or NAMES)
+```
+docker port my_name
+
+      443/tcp -> 0.0.0.0:32772
+      80/tcp -> 0.0.0.0:32773
+```
+
+
+Make mapping of container's port 80 to any **random port** of host machine: use `-P` key
+```
+docker run -P prakhar1989/static-site
+```
+
+
+Make mapping of container's port 80 to **specific port** 2020 of host machine: use `-p` key
+```
+docker run -p 80:2020 prakhar1989/static-site
+```
 
 
 
