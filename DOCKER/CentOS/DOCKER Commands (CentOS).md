@@ -9,7 +9,6 @@ The `docker` daemon always runs as the root user.
 Docker creates a new container from the image every time it runs. So no changes will be available after container booting.
 
 
-______________________
 
 ## RE-BOOT DOCKER DAEMON
 
@@ -49,7 +48,7 @@ ps -ef | grep docker
       root      5654  5648  0 14:27 ?        00:00:00 docker-containerd --config /var/run/docker/containerd/containerd.toml
 ```
 
-___________________
+
 
 ## IMAGES
 
@@ -84,7 +83,7 @@ docker pull busybox
 docker rmi hello-world
 ```
 
-______________________
+
 
 
 ## CONTAINERS
