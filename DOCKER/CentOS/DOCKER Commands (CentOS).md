@@ -95,7 +95,7 @@ docker rmi hello-world
 docker ps
 ```
 
-**List history of running containers**
+**List ALL containers (running + stopped)**
 
 All of them left on the disk, so some diskspace is wasted.
 ```
