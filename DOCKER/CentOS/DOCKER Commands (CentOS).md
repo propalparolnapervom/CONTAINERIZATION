@@ -230,7 +230,7 @@ docker run -P prakhar1989/static-site
 
 Make mapping of container's port 80 to **specific port** 2020 of host machine: use `-p` key
 ```
-docker run -p 80:2020 prakhar1989/static-site
+docker run -p 2020:80 prakhar1989/static-site
 ```
 
 
