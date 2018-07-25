@@ -39,12 +39,15 @@ Processes:
 
   - **(docker-)runc** - A lightweight binary for actually running containers. Deals with the low-level interfacing with Linux capabilities like cgroups, namespaces, etc...
 
-  - **(docker-)containerd-shim** - After runC actually runs the container, it exits (allowing us to not have any long-running processes responsible for our containers). The shim is the component which sits between containerd and runc to facilitate this.
+  - **(docker-)containerd-shim** - After runC actually runs the container, it exits (allowing us to not have any long-running processes responsible for our containers). The shim is the component which sits between containerd and runc to facilitate this. Also:
+    - It allows you to run daemonless containers.
+    - STDIO and other FDs are kept open in the event that containerd and docker die.
+    - Reports the containers exit status to containerd.
 ____________________
 
 How the docker container creation process works (from docker run to runc)
 
-[Explanation](https://prefetch.net/blog/2018/02/19/how-the-docker-container-creation-process-works-from-docker-run-to-runc/)
+  - [Explanation](https://prefetch.net/blog/2018/02/19/how-the-docker-container-creation-process-works-from-docker-run-to-runc/)
 
 
 
