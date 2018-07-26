@@ -175,6 +175,13 @@ docker start my_name
 
 ### REMOVE
 
+
+**Automatically remove the container when it exits**
+```
+docker run --rm hello-world
+```
+
+
 **Remove container**
 
 Free diskspace by removing old containers.
