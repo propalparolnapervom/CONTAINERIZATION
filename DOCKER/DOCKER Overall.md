@@ -15,12 +15,37 @@
 
 ### OVERALL INFO
 
-VM vs. Container:
+The `docker` daemon always runs as the root user.
+____________________
+
+Docker creates a new container from the image every time it runs. So no changes will be available after container booting.
+
+____________________
+
+**Docker Images Layers**
+
+
+A docker container image is created using a `dockerfile`. Every line in a `dockerfile` will create a *layer*. Consider the following dummy example. This will create a final image where the total number of layers will be X+3.
+```
+FROM ubuntu             #This has its own number of layers say "X"
+MAINTAINER FOO          #This is one layer 
+RUN mkdir /tmp/foo      #This is one layer 
+RUN apt-get install vim #This is one layer 
+```
+
+Basically, a *layer*, or *image layer* is a change on an image, or an **intermediate image**. Every command you specify (`FROM`, `RUN`, `COPY`, etc.) in your `Dockerfile` causes the previous image to change, thus creating a new layer.
+
+The concept of layers comes in handy at the time of building images. Because layers are intermediate images, if you make a change to your Dockerfile, docker will build only the layer that was changed and the ones after that. This is called *layer caching*.
+
+____________________
+
+**VM vs. Container**
   - The VM is a *hardware abstraction*: it takes physical CPUs and RAM from a host, and divides and shares it across several smaller virtual machines. There is an OS and application running inside the VM, but the virtualization software usually has no real knowledge of that.
   - A container is an *application abstraction*: the focus is really on the OS and the application, and not so much the hardware abstraction. Many customers actually use both VMs and containers today in their environments and, in fact, may run containers inside of VMs.
 
 ____________________
-Therminology:
+
+**Therminology**
 
   - **Images** - The blueprints of our application which form the basis of containers. In the demo above, we used the docker pull command to download the busybox image.
   - **Containers** - Created from Docker images and run the actual application. We create a container using `docker run` which we did using the busybox image that we downloaded. A list of running containers can be seen using the `docker ps` command.
@@ -30,7 +55,8 @@ Therminology:
   
 ____________________
 
-Processes:
+**Processes**
+
   - **dockerd** - The Docker daemon itself. The highest level component in your list and also the only 'Docker' product listed. Provides all the nice UX features of Docker.
 
   - **(docker-)containerd** - Also a daemon, listening on a Unix socket, exposes gRPC endpoints. Handles all the low-level container management tasks, storage, image distribution, network attachment, etc...
