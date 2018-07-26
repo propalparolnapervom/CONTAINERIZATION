@@ -2,12 +2,12 @@
 # DOCKER COMMANDS (CentOS)
 
 
-## OVERALL INFO
+**See Docker version**
+```
+docker --version
 
-The `docker` daemon always runs as the root user.
-
-Docker creates a new container from the image every time it runs. So no changes will be available after container booting.
-
+      Docker version 1.12.1, build 23cf638
+```
 
 
 ## RE-BOOT DOCKER DAEMON
@@ -64,6 +64,13 @@ docker images
       hello-world         latest              2cb0d9787c4d        13 days ago         1.85kB
 ```
 
+**List images (with full image ID)**
+```
+docker images --no-trunc
+
+      REPOSITORY                          TAG                 IMAGE ID                                                                  CREATED             SIZE
+      hello-world                         latest              sha256:2cb0d9787c4dd17ef9eb03e512923bc4db10add190d3f84af63b744e353a9b34   2 weeks ago         1.848 kB
+```
 
 **Download images**
 
@@ -79,9 +86,36 @@ docker pull busybox
 
 
 **Delete images**
+
+Specific one
 ```
 docker rmi hello-world
 ```
+
+Multiply ones
+```
+docker rmi $(docker images -f "label=com.example.version" -q)
+
+      8abc22fbb042
+      48e5f45168b9
+```
+
+
+**Filter images**
+
+[Filter docs](https://docs.docker.com/engine/reference/commandline/images/#filtering)
+
+By time (with REPOSITORY name specifying)
+```
+docker images --filter "before=image1"
+
+docker images --filter "since=image3"
+```
+
+**Format output**
+
+[Formatting docs](https://docs.docker.com/engine/reference/commandline/images/#format-the-output)
+
 
 
 
