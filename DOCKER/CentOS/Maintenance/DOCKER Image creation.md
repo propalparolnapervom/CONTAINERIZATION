@@ -32,6 +32,15 @@ The primary purpose of `CMD` is to tell the container which command it should ru
 
 
 
+## EXAMPLES
+
+Make an image, put it to the Docker Hub via your login (ppnp)
+```
+cd <app_with_dockefile_dir>
+echo; ls -la; pwd; echo; echo "   SEE DOCKERFILE: `ls -la Dockerfile`"; echo
+
+docker build -t ppnp/my_first_image .
+```
 
 
 
