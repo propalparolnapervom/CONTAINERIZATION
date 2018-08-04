@@ -197,6 +197,11 @@ Running the run command with the -it flags attaches us to an interactive tty in 
 docker run -it busybox
 ```
 
+Execute a command in the already running Docker container
+```
+docker exec -it gloomy_williams bash
+```
+
 **Run container in detach mode**
 ```
 docker run -d prakhar1989/static-site
