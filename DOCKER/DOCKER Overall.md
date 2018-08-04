@@ -76,6 +76,15 @@ How the docker container creation process works (from docker run to runc)
   - [Explanation](https://prefetch.net/blog/2018/02/19/how-the-docker-container-creation-process-works-from-docker-run-to-runc/)
 
 
+____________________
+
+**Ecosystem**
+
+In the Docker ecosystem cxcept Docker Client there are a bunch of other open-source tools which play very nicely with Docker. A few of them are
+  - [Docker Machine](https://docs.docker.com/machine/) - Create Docker hosts on your computer, on cloud providers, and inside your own data center
+  - [Docker Compose](https://docs.docker.com/compose/) - A tool for defining and running multi-container Docker applications.
+  - [Docker Swarm](https://docs.docker.com/swarm/) - A native clustering solution for Docker
+
 
 
 
