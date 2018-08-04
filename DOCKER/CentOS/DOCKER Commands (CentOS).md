@@ -118,6 +118,23 @@ docker images --filter "since=image3"
 [Formatting docs](https://docs.docker.com/engine/reference/commandline/images/#format-the-output)
 
 
+**Publish image on a registry (Docker Hub, for example**
+
+Authorize
+```
+docker login
+
+      Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+      Username: ppnp
+      Password:
+      Login Succeeded
+```
+
+Put image to [Docker Hub](https://hub.docker.com/)
+```
+docker push ppnp/my_first_image
+```
+
 
 
 
@@ -185,6 +202,13 @@ docker run -it busybox
 docker run -d prakhar1989/static-site
 
       4fa8fb2ab6a08b03414056c170ade3aa1a4c76a01de19532e7032a9a51ec1981
+```
+
+**Run container in specific network**
+
+Run `ppnp/my_first_image` container in `my_first_network` network via `--net` key
+```
+docker run --net my_first_network ppnp/my_first_image
 ```
 
 
@@ -276,11 +300,45 @@ docker run -p 2020:80 prakhar1989/static-site
 ```
 
 
+## NETWORKING
+
+[Networking Docs](https://docs.docker.com/network/)
 
 
+**View available networks**
+```
+      #In this example 3 networks shown that are created automatically during Docker installation process
+      
+docker network ls
+
+      NETWORK ID          NAME                DRIVER              SCOPE
+      740ea3f0804c        bridge              bridge              local       <== The bridge network is the network 
+                                                                              in which containers are run by default.
+      aa18ba83beac        host                host                local
+      3db803a66f6d        none                null                local
+```
 
 
+**Display detailed information on network**
 
+Show info regarding `bridge` network
+```
+docker network inspect bridge
+```
+
+**Create a new network**
+
+Create a new bridge network
+```
+docker network create my_first_network
+```
+
+**Run a container in specific network**
+
+Run `ppnp/my_first_image` container in `my_first_network` network via `--net` key
+```
+docker run --net my_first_network ppnp/my_first_image
+```
 
 
 
