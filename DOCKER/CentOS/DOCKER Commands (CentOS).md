@@ -333,6 +333,13 @@ Create a new bridge network
 docker network create my_first_network
 ```
 
+**Remove network**
+
+Remove specific network
+```
+docker network rm foodtrucks
+```
+
 **Run a container in specific network**
 
 Run `ppnp/my_first_image` container in `my_first_network` network via `--net` key
