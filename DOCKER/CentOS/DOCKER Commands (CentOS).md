@@ -39,6 +39,11 @@ Ctrl+C
 
 **Verification**
 
+By viewing status
+```
+sudo systemctl status docker
+```
+
 Verify that `docker` is installed correctly by running the `hello-world` image.
 ```
 docker run hello-world
