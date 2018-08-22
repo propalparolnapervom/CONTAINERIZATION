@@ -2,13 +2,19 @@
 # DOCKER COMMANDS (CentOS)
 
 
-**See Docker version**
+## OVERALL
+
+**Docker version**
 ```
 docker --version
 
       Docker version 1.12.1, build 23cf638
 ```
 
+**Usefull info**
+```
+docker info
+```
 
 
 ## RE-BOOT DOCKER DAEMON
