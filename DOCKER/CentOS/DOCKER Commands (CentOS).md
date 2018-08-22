@@ -98,6 +98,11 @@ Specific one
 docker rmi hello-world
 ```
 
+All ones
+```
+docker rmi *
+```
+
 Multiply ones
 ```
 docker rmi $(docker images -f "label=com.example.version" -q)
