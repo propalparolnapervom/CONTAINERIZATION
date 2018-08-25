@@ -1,5 +1,9 @@
 ## DOCKER OVERALL
 
+### USEFUL INFO
+  - [Docker Overview](https://docs.docker.com/engine/docker-overview/)
+  - [Docker Hub](https://hub.docker.com/) - repository of Docker images
+
 
 ### TUTORIALS
 
@@ -7,13 +11,20 @@
   - [http://docker-curriculum.com/](http://docker-curriculum.com/)
 
 
-### USEFUL INFO
-
-  - [Docker Hub](https://hub.docker.com/) - repository of Docker images
-
 
 
 ### OVERALL INFO
+
+Docker Engine is a client-server application with these major components:
+
+  - A server which is a type of long-running program called a daemon process (the `dockerd` command).
+
+  - A **REST API** which specifies interfaces that programs can use to talk to the daemon and instruct it what to do.
+
+  - A command line interface (CLI) client (the `docker` command).
+
+____________________
+
 
 The `docker` daemon always runs as the root user.
 ____________________
