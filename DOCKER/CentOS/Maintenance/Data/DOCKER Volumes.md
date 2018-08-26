@@ -56,11 +56,16 @@ docker run -it -v /volume_app alpine /bin/sh
 
 ### REMOVE
 
-Remove `vol_1` volume.
+**Specific volume**
 
 Only after all appropriate containers (even stopped ones) removed.
 ```
 docker volume rm vol_1
+```
+
+**All unused volumes**
+```
+docker volume prune
 ```
 
 ### USE EXISTING ONES
