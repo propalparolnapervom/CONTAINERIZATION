@@ -3,6 +3,7 @@
 ## USEFUL INFO
   - [Docker Overview](https://docs.docker.com/engine/docker-overview/)
   - [Docker Hub](https://hub.docker.com/) - repository of Docker images
+  - [UnionFS and Docker](https://medium.com/@paccattam/drooling-over-docker-2-understanding-union-file-systems-2e9bf204177c)
 
 
 ## TUTORIALS
