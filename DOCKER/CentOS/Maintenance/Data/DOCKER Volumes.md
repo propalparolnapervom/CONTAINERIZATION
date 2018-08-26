@@ -51,6 +51,12 @@ Create volume with following:
 docker run -it -v /volume_app alpine /bin/sh
 ```
 
+### REMOVE
+
+Remove `vol_` volume
+```
+docker volume rm vol_1
+```
 
 ### USE EXISTING ONES
 
