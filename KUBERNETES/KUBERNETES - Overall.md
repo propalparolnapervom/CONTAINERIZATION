@@ -45,6 +45,100 @@ And THAT IS **Kubernetes**. It is a container Orchestration technology used to o
 
 
 
+# ARCHITECTURE
+
+
+## BASIC CONCEPTS
+
+
+A **node** (**minion** in the past) is a machine – physical or virtual – on which kubernetes is installed. A node is a *worker machine* and this is were containers will be launched by kubernetes.
+
+But what if the node on which our application is running fails? Well, obviously our application goes down. So you need to have more than one nodes.
+
+
+A **cluster** is a set of nodes grouped together. This way even if one node fails you have your application still accessible from the other nodes. Moreover having multiple nodes helps in sharing load as well.
+
+
+
+Now we have a cluster, but:
+  - Who is responsible for managing the cluster? 
+  - Were is the information about the members of the cluster stored? 
+  - How are the nodes monitored? 
+  - When a node fails how do you move the workload of the failed node to another worker node? 
+  
+That’s were the **Master** comes - another node with Kubernetes installed in it, and is configured as a Master. The master watches over the nodes in the cluster and is responsible for the actual orchestration of containers on the worker nodes.
+
+
+
+## COMPONENTS
+
+
+When you install Kubernetes on a System, you are actually installing the following components:
+
+**1) API server**
+
+Acts as the front-end for kubernetes.
+      - The users
+      - management devices
+      - Command line interfaces 
+      
+... all talk to the API server to interact with the kubernetes cluster.
+
+
+**2) ETCD key store**
+
+ETCD is a distributed reliable key-value store used by kubernetes to store all data used to manage the cluster. 
+
+Think of it this way, when you have multiple nodes and multiple masters in your cluster, etcd stores all that information on all the nodes in the cluster in a distributed manner. ETCD is responsible for implementing locks within the cluster to ensure there are no conflicts between the Masters.
+
+**3) Scheduler**
+
+Responsible for distributing *work* or *containers* across multiple nodes. 
+
+It looks for newly created containers and assigns them to Nodes. 
+
+
+**4) Controllers**
+
+The controllers are the brain behind orchestration. 
+
+They are responsible for noticing and responding when nodes, containers or endpoints goes down. 
+
+The controllers makes decisions to bring up new containers in such cases.
+
+
+**5) Container runtime**
+
+The container runtime is the underlying software that is used to run containers. 
+
+In our case it happens to be Docker.
+
+
+**6) kubelet**
+
+
+And finally kubelet is the agent that runs on each node in the cluster. 
+
+The agent is responsible for making sure that the containers are running on the nodes as expected.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
