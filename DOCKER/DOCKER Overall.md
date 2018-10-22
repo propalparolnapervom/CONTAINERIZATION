@@ -181,6 +181,7 @@ Basically, a *layer*, or *image layer* is a change on an image, or an **intermed
 
 The concept of layers comes in handy at the time of building images. Because layers are intermediate images, if you make a change to your Dockerfile, docker will build only the layer that was changed and the ones after that. This is called *layer caching*.
 
+
 ____________________
 
 **VM vs. Container**
@@ -188,6 +189,14 @@ ____________________
   - A container is an *application abstraction*: the focus is really on the OS and the application, and not so much the hardware abstraction. Many customers actually use both VMs and containers today in their environments and, in fact, may run containers inside of VMs.
   
 It is also important to note that, Docker has less isolation as more resources are shared between containers like the kernel etc. Whereas VMs have complete isolation from each other. Since VMs don’t rely on the underlying OS or kernel, you can run different types of OS such as linux based or windows based on the same hypervisor.
+
+____________________
+
+**Container vs Image**
+
+An **image** is a package or a template, just like a VM template that you might have worked with in the virtualization world. It is used to create one or more containers.
+
+**Containers** are running instances off images that are isolated and have their own environments and set of processes
 
 
 ____________________
