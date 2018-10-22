@@ -78,9 +78,9 @@ When you install Kubernetes on a System, you are actually installing the followi
 **1) API server**
 
 Acts as the front-end for kubernetes.
-      - The users
-      - management devices
-      - Command line interfaces 
+  - The users
+  - management devices
+  - Command line interfaces 
       
 ... all talk to the API server to interact with the kubernetes cluster.
 
