@@ -1,6 +1,6 @@
 # KUBERNETES OVERALL
 
-(Kubernetes for the Absolute Beginner)[https://globallogic.udemy.com/learn-kubernetes/learn/v4/overview] Udemy Tutorial.
+[Kubernetes for the Absolute Beginner](https://globallogic.udemy.com/learn-kubernetes/learn/v4/overview) Udemy Tutorial.
 
 # OVERALL
 
