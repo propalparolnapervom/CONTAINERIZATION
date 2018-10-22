@@ -13,6 +13,60 @@
 
 
 
+## OVERALL
+
+**Containers** are completely isolated environments, as in they can have their own processes or services, their own network interfaces, their own mounts, just like Virtual Machines, except that **they all share the same OS kernel**.
+
+______
+
+Containers are not new with Docker. Containers have existed for about 10 years now and some of the different types of containers are LXC, LXD , LXCFS etc. 
+
+Docker utilizes LXC containers. 
+
+Setting up these container environments is hard as they are very low level and that is were Docker offers a high-level tool with several powerful functionalities making it really easy for end users like us.
+
+______
+
+If you look at OS like Ubuntu, Fedora, Suse or Centos – they all consist of two things:
+  - OS Kernel 
+  - set of software. 
+  
+The **OS Kernel** is responsible for interacting with the underlying hardware. 
+
+While the *OS kernel* remains the same (*Linux* in this case), it’s the *software* above it that make these OS different. 
+
+This **software** may consist of a different:
+  - User Interface
+  - drivers
+  - compilers
+  - File managers
+  - developer tools
+  - etc. 
+  
+SO you have a common *Linux Kernel* shared across all OSes and some *custom softwares* that differentiate OS from each other.
+
+_____
+
+We said earlier that Docker containers share the underlying kernel. What does that actually mean – sharing the kernel? 
+
+Let’s say we have a system with an Ubuntu OS with Docker installed on it. 
+
+Docker can run any flavor of OS on top of it as long as they are all based on the same kernel – in this case *Linux*. 
+
+If the underlying OS is Ubuntu, docker can run a container based on another distribution like debian, fedora, suse or centos. 
+
+> Each docker container only has the additional software, that we just talked about, that makes these OSs different and docker utilizes the underlying kernel of the Docker host which works with all OSs above.
+
+
+So what is an OS that do not share the same kernel as these? Windows ! And so you wont be able to run a windows based container on a Docker host with Linux OS on it. For that you would require docker on a windows server.
+
+
+You might ask isn’t that a disadvantage then? Not being able to run another kernel on the OS? The answer is No! Because unlike hypervisors, Docker is not meant to virtualize and run different Operating systems and kernels on the same hardware. 
+
+**The main purpose of Docker is to containerize applications and to ship them and run them**
+
+
+
 
 ## ARCHITECTURE
 
@@ -82,7 +136,7 @@ In the future, Docker may support other container formats by integrating with te
 
 
 
-## OVERALL
+## MISCALENIOUS
 
 The `docker` daemon always runs as the root user.
 ____________________
@@ -132,6 +186,9 @@ ____________________
 **VM vs. Container**
   - The VM is a *hardware abstraction*: it takes physical CPUs and RAM from a host, and divides and shares it across several smaller virtual machines. There is an OS and application running inside the VM, but the virtualization software usually has no real knowledge of that.
   - A container is an *application abstraction*: the focus is really on the OS and the application, and not so much the hardware abstraction. Many customers actually use both VMs and containers today in their environments and, in fact, may run containers inside of VMs.
+  
+It is also important to note that, Docker has less isolation as more resources are shared between containers like the kernel etc. Whereas VMs have complete isolation from each other. Since VMs don’t rely on the underlying OS or kernel, you can run different types of OS such as linux based or windows based on the same hypervisor.
+
 
 ____________________
 
