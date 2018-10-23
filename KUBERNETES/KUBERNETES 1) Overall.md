@@ -173,7 +173,7 @@ A **POD** is a single instance of an application.
 
 It is the smallest object, that you can create in kubernetes.
 
-Each POD gets it own IP address.
+Each POD gets it own internal IP address.
 
 
 ### Relationship between Containers and POD
