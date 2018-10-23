@@ -16,22 +16,70 @@ List all the nodes part of the cluster
 kubectl get pod
 ```
 
+# NODEs
+
+List all nodes
+```
+kubectl get nodes
+
+      NAME       STATUS    ROLES     AGE       VERSION
+      minikube   Ready     master    1h        v1.10.0
+```
+
+
+
 # PODs
+
+## LIST PODs
 
 List all pods in ps output format
 ```
 kubectl get pods
+
+      NAME                     READY     STATUS    RESTARTS   AGE
+      nginx-65899c769f-v8r2p   1/1       Running   0          2m
+
+
+kubectl get pods -o=wide
+
+      NAME                     READY     STATUS    RESTARTS   AGE       IP           NODE
+      nginx-65899c769f-v8r2p   1/1       Running   0          3m        172.17.0.5   minikube
 ```
 
-List all pods in ps output format with more information (such as node name).
+
+List a specific pod in JSON output format
 ```
-kubectl get pods -o wide
+kubectl get -o json pod nginx-65899c769f-v8r2p
 ```
 
-List a single pod in JSON output format
+
+
+## DESCRIBE PODs
+
+Describe all PODs
 ```
-kubectl get -o json pod web-pod-13je7
+kubectl describe pods
 ```
+
+Describe specific POD
+```
+kubectl describe pods nginx-pod-name-58b8b74459-nzc57
+```
+
+
+
+
+
+## DEPLOY PODs
+
+Deploy a POD `nginx-pod-name` from `nginx` already existing Docker image (from Docker Hub)
+```
+kubectl run nginx-pod-name --image=nginx
+```
+
+
+
+
 
 
 **************
