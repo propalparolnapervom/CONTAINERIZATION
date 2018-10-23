@@ -162,6 +162,9 @@ The kube control tool is used to:
   
 ## PODs
 
+[Kubernetes Concepts](https://kubernetes.io/docs/concepts/)
+
+[Pod Overview](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/)
 
 ### Overall
 
