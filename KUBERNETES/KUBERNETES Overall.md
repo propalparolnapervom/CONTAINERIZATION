@@ -123,9 +123,41 @@ The agent is responsible for making sure that the containers are running on the 
 
 
 
+## MASTER VS WORKER
+
+How does one server become a master and the other slave?
+
+
+The *worker node* is were the containers are hosted. For example Docker containers, and to run docker containers on a system, we need a container runtime installed. And that’s were the container runtime falls. In this case it happens to be Docker. This doesn’t HAVE to be docker.
+
+
+The *master server* has the kube-apiserver and that is what makes it a master.
+
+
+Similarly the *worker nodes* have the kubelet agent that is responsible for interacting with the master to provide health information of the worker node and carry out actions requested by the master on the worker nodes.
+
+All the information gathered are stored in a key-value store on the Master. The key value store is based on the popular etcd framework as we just discussed.
+
+The master also has the controller manager and the scheduler.
+
+> There are other components as well, but we will stop there for now. The reason we went through this is to understand what components constitute the master and worker nodes.
+
 
 ![Master vs Worker Nodes](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/K8S_master_worker.png "Master vs Worker Nodes")
 
+
+
+## kubectl
+
+And finally, we also need to learn a little bit about ONE of the command line utilities known as the **kube command line tool** or **kubectl** or **kube control** as it is also called. 
+
+The kube control tool is used to:
+  - deploy and manage applications on a kubernetes cluster
+  - to get cluster information
+  - get the status of nodes in the cluster
+  - etc
+  
+  
 
 
 
