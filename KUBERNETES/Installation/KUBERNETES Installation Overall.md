@@ -14,7 +14,7 @@
 
 # HOSTED SOLUTIONS
 
-(Docs)[https://kubernetes.io/docs/setup/pick-right-solution/#hosted-solutions]
+[Hosted solutions](https://kubernetes.io/docs/setup/pick-right-solution/#hosted-solutions)
 
 
 
