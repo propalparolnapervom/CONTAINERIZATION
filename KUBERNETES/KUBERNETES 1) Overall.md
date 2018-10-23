@@ -158,14 +158,40 @@ The kube control tool is used to:
   - etc
   
   
+  
+  
+## PODs
 
 
+### Overall
+
+So, with kubernetes our ultimate aim is to deploy our application in the form of containers on a set of machines that are configured as worker nodes in a cluster. 
+
+However, kubernetes does not deploy containers directly on the worker nodes. The containers are encapsulated into a Kubernetes object known as PODs. 
+
+A **POD** is a single instance of an application. 
+
+It is the smallest object, that you can create in kubernetes.
 
 
+### Relationship between Containers and POD
 
 
+PODs **usually** have a 1:1 relationship with containers running your application. To scale UP you create new PODs and to scale down you delete PODs. You do not add additional containers to an existing POD to scale your application.
 
 
+But, are we restricted to having a single container in a single POD? No! 
+
+A single POD **can** have multiple containers, except for the fact that they are usually not multiple containers of the same kind. 
+
+If our intention was to scale our application, then we would need to create additional PODs. But sometimes you might have a scenario were you have a helper container, that might be doing some kind of supporting task for our web application such as processing a user entered data, processing a file uploaded by the user etc. and you want these helper containers to live along side your application container. 
+
+In that case, you CAN have both of these containers part of the same POD, so that when a new application container is created, the helper is also created and when it dies the helper also dies since they are part of the same POD. 
+
+The two containers can also communicate with each other directly by referring to each other as ‘localhost’ since they share the same network namespace. Plus they can easily share the same storage space as well.
+
+
+![K8S: Container vs POD](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/K8S_container_POD.png "K8S: Container vs POD")
 
 
 
