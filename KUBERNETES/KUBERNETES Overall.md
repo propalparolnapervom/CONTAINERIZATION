@@ -123,7 +123,7 @@ The agent is responsible for making sure that the containers are running on the 
 
 
 
-## MASTER VS WORKER
+## MASTER vs WORKER
 
 How does one server become a master and the other slave?
 
