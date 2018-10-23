@@ -124,7 +124,7 @@ The agent is responsible for making sure that the containers are running on the 
 
 
 
-
+![Master vs Worker Nodes](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/K8S_master_worker.png "Master vs Worker Nodes")
 
 
 
