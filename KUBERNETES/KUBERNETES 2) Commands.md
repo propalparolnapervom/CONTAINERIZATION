@@ -78,7 +78,12 @@ kubectl run nginx-pod-name --image=nginx
 ```
 
 
+## DESTROY PODs
 
+Destroy deployment
+```
+kubectl delete deployment nginx-pod-name
+```
 
 
 
