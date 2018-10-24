@@ -1,0 +1,43 @@
+# KUBERNETES REPLICACONTROLLER ADVANCED
+
+
+# REPLICACONTROLLER CONFIG FILE
+
+## CREATION
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
