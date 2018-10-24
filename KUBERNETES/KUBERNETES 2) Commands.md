@@ -72,10 +72,35 @@ kubectl describe pods nginx-pod-name-58b8b74459-nzc57
 
 ## DEPLOY PODs
 
+### Command Line
+
 Deploy a POD `nginx-pod-name` from `nginx` already existing Docker image (from Docker Hub)
 ```
 kubectl run nginx-pod-name --image=nginx
 ```
+
+### Config File
+
+Create a Config File `pod-creation.yml`
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: xbs-pod
+  labels:
+      app: random-name-app
+      type: for-example-front-end
+spec:
+  containers:
+    - name: container-name
+      image: nginx
+```
+
+Run it to create a POD
+```
+kubectl create -f pod-creation.yml
+```
+
 
 
 ## DESTROY PODs
