@@ -70,7 +70,7 @@ That’s were the **Master** comes - another node with Kubernetes installed in i
 
 
 
-## COMPONENTS
+# COMPONENTS
 
 
 When you install Kubernetes on a System, you are actually installing the following components:
@@ -160,13 +160,15 @@ The kube control tool is used to:
   
   
   
-## PODs
+  
+  
+# PODs
 
 [Kubernetes Concepts](https://kubernetes.io/docs/concepts/)
 
 [Pod Overview](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/)
 
-### Overall
+## Overall
 
 So, with kubernetes our ultimate aim is to deploy our application in the form of containers on a set of machines that are configured as worker nodes in a cluster. 
 
@@ -179,7 +181,7 @@ It is the smallest object, that you can create in kubernetes.
 Each POD gets it own internal IP address.
 
 
-### Relationship between Containers and POD
+## Relationship between Containers and POD
 
 
 PODs **usually** have a 1:1 relationship with containers running your application. To scale UP you create new PODs and to scale down you delete PODs. You do not add additional containers to an existing POD to scale your application.
@@ -200,14 +202,17 @@ The two containers can also communicate with each other directly by referring to
 
 
 
-## REPLICACONTROLLERs
+
+
+
+# REPLICACONTROLLERs
 
 **Controllers** are the brain behind Kubernetes. They are processes that monitor kubernetes objects and respond accordingly. 
 
 Further we will discuss about one controller in particular. And that is the Replication Controller.
 
 
-### High Availability
+## High Availability
 
 Let’s go back to our first scenario were we had a single POD running our application. What if for some reason, our application crashes and the POD fails? Users will no longer be able to access our application. 
 
@@ -220,7 +225,7 @@ Even if you have a single POD, the replication controller can help by automatica
 Thus the replication controller ensures that the specified number of PODs are running at all times. Even if it’s just 1 or 100.
 
 
-### Load balancing
+## Load balancing
 
 Another reason we need replication controller is to create multiple PODs to share the load across them. 
 
@@ -230,7 +235,7 @@ As you can see, the replication controller spans across multiple nodes in the cl
 
 
 
-### Replication Controller vs. Replica Set
+## Replication Controller vs. Replica Set
 
 It’s important to note that there are two similar terms: Replication Controller and Replica Set. 
 
@@ -245,7 +250,22 @@ However, whatever we discussed in the previous few slides remain applicable to b
 
 
 
+# REPLICASETs
 
+
+It is very similar to replication controller.
+
+However, there's a major difference between Replication Controller and Replica Set.
+
+
+Replica set requires a selector definition. 
+
+The selector section helps the replicaset identify what pods fall under it. But why would you have to specify what PODs fall under it, if you have provided the contents of the pod-definition file itself in the template? It’s BECAUSE, replica set can ALSO manage pods that were not created as part of the replicaset creation. Say for example, there were pods created BEFORE the creation of the ReplicaSet that match the labels specified in the selector, the replica set will also take THOSE pods into consideration when creating the replicas.
+
+
+## LABELS AND SELECTORS
+
+![Lables and Selectors](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/K8S_labels_selectors.png "Labels and Selectors")
 
 
 
