@@ -46,8 +46,12 @@ kubectl get pods -o=wide
       nginx-65899c769f-v8r2p   1/1       Running   0          3m        172.17.0.5   minikube
 ```
 
+List PODs with specific label
+```
+kubectl get pods -l app=random-name-app
+```
 
-List a specific pod in JSON output format
+List a specific POD in JSON output format
 ```
 kubectl get -o json pod nginx-65899c769f-v8r2p
 ```
@@ -105,14 +109,19 @@ kubectl create -f pod-creation.yml
 
 ## DESTROY PODs
 
-Destroy all deployments
+Destroy all PODs
 ```
-kubectl delete deployment --all
+kubectl delete pods --all
 ```
 
-Destroy specific deployment
+Destroy specific POD (by POD name)
 ```
-kubectl delete deployment nginx-pod-name
+kubectl delete pod xbs-pod
+```
+
+Destroy specific POD (by POD label)
+```
+kubectl delete pods -l app=random-name-app
 ```
 
 
