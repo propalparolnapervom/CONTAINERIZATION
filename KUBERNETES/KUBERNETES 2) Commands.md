@@ -176,6 +176,36 @@ kubectl get rs xbs-rs
 kubectl get replicaset xbs-rs
 ```
 
+## UPDATE RSs (SCALE, for instance)
+
+### Via Config File updating
+
+Update `replicas` value in Config File `rs-creation.yml`:
+```
+vi rs-creation.yml
+```
+
+Update Kubernetes with just updated Config File
+```
+kubectl replace -f rs-creation.yml
+```
+
+### Via Command Line (with Config File name)
+
+```
+kubectl scale --replicas=6 -f rs-creation.yml
+```
+
+> NOTE: Kubernetes will be updated, but file `rs-creation.yml` itself won't be updated
+
+
+### Via Command Line (with values)
+
+```
+      #kubectl replace --replicas=6 <type> <name>
+      
+kubectl replace --replicas=6 replicaset myapp-replicaset
+```
 
 ## DELETE RCs
 
