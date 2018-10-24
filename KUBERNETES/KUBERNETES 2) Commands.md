@@ -156,6 +156,35 @@ kubectl delete rc xbs-rc
 
 
 
+# RSs
+
+## LIST RSs
+
+List all ReplicaSet
+```
+kubectl get rs
+
+
+kubectl get replicaset
+```
+
+List specific ReplicaSet
+```
+kubectl get rs xbs-rs
+
+
+kubectl get replicaset xbs-rs
+```
+
+
+## DELETE RCs
+
+Delete specific ReplicaSet (PODs inside RS will be destroyed as well)
+```
+kubectl delete rs xbs-rs
+```
+
+
 
 
 
