@@ -230,7 +230,17 @@ As you can see, the replication controller spans across multiple nodes in the cl
 
 
 
+### Replication Controller vs. Replica Set
 
+It’s important to note that there are two similar terms: Replication Controller and Replica Set. 
+
+Both have the same purpose but they are not the same. 
+
+**Replication Controller** is the older technology that is being replaced by **Replica Set**. 
+
+Replica set is the new recommended way to setup replication. 
+
+However, whatever we discussed in the previous few slides remain applicable to both these technologies. There are minor differences in the way each works and we will look at that in a bit.
 
 
 
