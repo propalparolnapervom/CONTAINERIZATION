@@ -105,7 +105,12 @@ kubectl create -f pod-creation.yml
 
 ## DESTROY PODs
 
-Destroy deployment
+Destroy all deployments
+```
+kubectl delete deployment --all
+```
+
+Destroy specific deployment
 ```
 kubectl delete deployment nginx-pod-name
 ```
