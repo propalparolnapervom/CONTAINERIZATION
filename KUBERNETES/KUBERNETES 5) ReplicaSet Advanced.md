@@ -1,0 +1,50 @@
+# KUBERNETES REPLICASET ADVANCED
+
+
+# CONFIG FILE
+
+## CREATION
+
+
+
+## RUN
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
