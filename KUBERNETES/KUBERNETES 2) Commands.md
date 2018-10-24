@@ -132,36 +132,20 @@ kubectl delete pods -l app=random-name-app
 
 List all replication controllers
 ```
+kubectl get rc
+
+
 kubectl get replicationcontroller
 ```
 
 List specific replication controller
 ```
+kubectl get rc xbs_controller
+
+
 kubectl get replicationcontroller xbs_controller
 ```
 
-
-**************
-
-  # List a single replication controller with specified NAME in ps output format.
-  kubectl get replicationcontroller web
-  
-
-  
-  # List a pod identified by type and name specified in "pod.yaml" in JSON output format.
-  kubectl get -f pod.yaml -o json
-  
-  # Return only the phase value of the specified pod.
-  kubectl get -o template pod/web-pod-13je7 --template={{.status.phase}}
-  
-  # List all replication controllers and services together in ps output format.
-  kubectl get rc,services
-  
-  # List one or more resources by their type and names.
-  kubectl get rc/web service/frontend pods/web-pod-13je7
-  
-  # List all resources with different types.
-  kubectl get all
 
 
 
