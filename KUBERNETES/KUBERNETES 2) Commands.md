@@ -126,11 +126,11 @@ kubectl delete pods -l app=random-name-app
 
 
 
-# REPLICATONCONTROLLERs
+# RCs
 
-## LIST REPLICATIONCONTROLLERS
+## LIST RCs
 
-List all replication controllers
+List all Replication Controllers
 ```
 kubectl get rc
 
@@ -138,7 +138,7 @@ kubectl get rc
 kubectl get replicationcontroller
 ```
 
-List specific replication controller
+List specific Replication Controller
 ```
 kubectl get rc xbs_controller
 
@@ -147,7 +147,12 @@ kubectl get replicationcontroller xbs_controller
 ```
 
 
+## DELETE RCs
 
+Delete specific Replication Controller (PODs inside RC will be destroyed as well)
+```
+kubectl delete rc xbs-rc
+```
 
 
 
