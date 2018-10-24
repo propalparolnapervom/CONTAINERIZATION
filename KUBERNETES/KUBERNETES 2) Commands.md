@@ -112,6 +112,21 @@ kubectl delete deployment nginx-pod-name
 
 
 
+# REPLICATONCONTROLLERs
+
+## LIST REPLICATIONCONTROLLERS
+
+List all replication controllers
+```
+kubectl get replicationcontroller
+```
+
+List specific replication controller
+```
+kubectl get replicationcontroller xbs_controller
+```
+
+
 **************
 
   # List a single replication controller with specified NAME in ps output format.
