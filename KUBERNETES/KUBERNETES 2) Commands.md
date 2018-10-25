@@ -224,11 +224,17 @@ kubectl delete rs xbs-rs
 
 List all Deployments
 ```
+kubectl get deploy
+
+
 kubectl get deployments
 ```
 
 List specific Deployment
 ```
+kubectl get deploy xbs-dpmnt
+
+
 kubectl get deployment xbs-dpmnt
 ```
 
@@ -262,6 +268,8 @@ kubectl scale --replicas=6 -f dpmnt-creation.yml
 
 Delete specific Deployment (PODs inside DEPLOYMENT will be destroyed as well)
 ```
+kubectl delete deploy xbs-dmpnt
+
 kubectl delete deployments xbs-dmpnt
 ```
 
