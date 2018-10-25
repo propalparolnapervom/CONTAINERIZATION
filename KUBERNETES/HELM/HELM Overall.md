@@ -12,6 +12,9 @@ Most every programming language and OS has its own package manager to help with 
 Helm provides the same basic feature set as many of the package managers you may already be familiar with, such as Debian's `apt`, or Python's `pip`.
 
 
+
+## CAN
+
 Helm can:
  - Install software.
  - Automatically install software dependencies.
@@ -20,10 +23,15 @@ Helm can:
  - Fetch software packages from repositories.
 
 
+## COMPONENTS
+
 Helm provides this functionality through the following components:
-  - A command line tool, `helm`, which provides the user interface to all Helm functionality.
-  - A companion server component, `tiller`, that runs on your Kubernetes cluster, listens for commands from `helm`, and handles the configuration and deployment of software releases on the cluster.
-  - The Helm packaging format, called **charts**.
+  - `helm` - A command line tool, provides the user interface to all Helm functionality.
+  - `tiller` - A companion server component that:
+    - runs on your Kubernetes cluster
+    - listens for commands from `helm`
+    - handles the configuration and deployment of software releases on the cluster.
+  - **charts** - The Helm packaging format.
   - An [official curated charts repository](https://github.com/helm/charts) with prepackaged charts for popular open-source software projects.
 
 
