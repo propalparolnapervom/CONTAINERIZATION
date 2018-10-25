@@ -3,6 +3,16 @@
 [Helm Overview](https://www.digitalocean.com/community/tutorials/an-introduction-to-helm-the-package-manager-for-kubernetes)
 
 
+
+
+**Helm** is a package manager for Kubernetes, analogous to `yum` or `apt`. 
+
+It makes it possible to organize Kubernetes objects in a packaged application that anyone can download and install in one click, or configure to their specific needs. 
+
+In Helm, these packages are called **charts** (similar to `debs` or `rpms`).
+
+___________
+
 Deploying applications to Kubernetes can be complex. Setting up a single application can involve creating multiple interdependent Kubernetes resources – such as pods, services, deployments, and replicasets – each requiring you to write a detailed YAML manifest file.
 
 **Helm** is a package manager for Kubernetes that allows developers and operators to more easily package, configure, and deploy applications and services onto Kubernetes clusters.
@@ -36,11 +46,21 @@ Helm provides this functionality through the following components:
   - An [official curated charts repository](https://github.com/helm/charts) with prepackaged charts for popular open-source software projects.
 
 
+## KEY CONCEPTS
+
+Helm is organized around several key concepts:
+
+ - A **chart** is a package of pre-configured Kubernetes resources
+ - A **release** is a specific instance of a *chart* which has been deployed to the cluster using Helm
+ - A **repository** is a group of published *charts* which can be made available to others
+
 
 
 ## CHARTs
 
 Helm packages are called charts, and they consist of a few YAML configuration files and some templates that are rendered into Kubernetes manifest files. 
+
+When a user installs a Helm **chart**, Helm deploys a Kubernetes cluster in the background, as specified in the chart’s configuration.
 
 Here is the basic directory structure of a chart:
 
