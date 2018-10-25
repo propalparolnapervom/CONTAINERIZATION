@@ -11,10 +11,17 @@ View information about the cluster
 kubectl cluster-info
 ```
 
-List all the nodes part of the cluster
+List all running Kubernetes objects
 ```
-kubectl get pod
+kubectl get all
 ```
+
+Describe specific POD (or any other type of resource)
+```
+kubectl describe pod xbs-dpmnt-5dc84f869d-jzjsm
+```
+
+
 
 # NODEs
 
@@ -199,13 +206,7 @@ kubectl scale --replicas=6 -f rs-creation.yml
 > NOTE: Kubernetes will be updated, but file `rs-creation.yml` itself won't be updated
 
 
-### Via Command Line (with values)
 
-```
-      #kubectl replace --replicas=6 <type> <name>
-      
-kubectl replace --replicas=6 replicaset myapp-replicaset
-```
 
 ## DELETE RCs
 
@@ -217,6 +218,52 @@ kubectl delete rs xbs-rs
 
 
 
+# DEPLOYMENTs
+
+## LIST DEPLOYMENTs
+
+List all Deployments
+```
+kubectl get deployments
+```
+
+List specific Deployment
+```
+kubectl get deployment xbs-dpmnt
+```
+
+## UPDATE DEPLOYMENTs (SCALE, for instance)
+
+### Via Config File updating
+
+Update `replicas` value in Config File `rs-creation.yml`:
+```
+vi dpmnt-creation.yml
+```
+
+Update Kubernetes with just updated Config File
+```
+kubectl replace -f dpmnt-creation.yml
+```
+
+### Via Command Line (with Config File name)
+
+```
+kubectl scale --replicas=6 -f dpmnt-creation.yml
+```
+
+> NOTE: Kubernetes will be updated, but file `dpmnt-creation.yml` itself won't be updated
+
+
+
+
+
+## DELETE DEPLOYMENTs
+
+Delete specific Deployment (PODs inside DEPLOYMENT will be destroyed as well)
+```
+kubectl delete deployments xbs-dmpnt
+```
 
 
 
