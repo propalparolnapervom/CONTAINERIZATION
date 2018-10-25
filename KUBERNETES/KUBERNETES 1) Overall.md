@@ -160,15 +160,38 @@ The kube control tool is used to:
   
   
   
-  
-  
-# PODs
+# KUBERNETES OBJECTS
 
-[Kubernetes Concepts](https://kubernetes.io/docs/concepts/)
+[Kubernetes Objects](https://kubernetes.io/docs/concepts/#kubernetes-objects)
+
+The basic Kubernetes objects include:
+
+  - Pod
+  - Service
+  - Volume
+  - Namespace
+
+
+## PODs
 
 [Pod Overview](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/)
 
-## Overall
+[Kubernetes Concepts](https://kubernetes.io/docs/concepts/)
+
+A **Pod** is the basic building block of Kubernetes–the smallest and simplest unit in the Kubernetes object model that you create or deploy. A Pod represents a running process on your cluster.
+
+A Pod encapsulates:
+  - an application container (or, in some cases, multiple containers)
+  - storage resources
+  - a unique network IP
+  - options that govern how the container(s) should run. 
+  
+A Pod represents a unit of deployment: a single instance of an application in Kubernetes, which might consist of either a single container or a small number of containers that are tightly coupled and that share resources.
+
+Docker is the most common container runtime used in a Kubernetes Pod, but Pods support other container runtimes as well.
+
+
+### Overall
 
 So, with kubernetes our ultimate aim is to deploy our application in the form of containers on a set of machines that are configured as worker nodes in a cluster. 
 
@@ -181,7 +204,7 @@ It is the smallest object, that you can create in kubernetes.
 Each POD gets it own internal IP address.
 
 
-## Relationship between Containers and POD
+### Relationship between Containers and POD
 
 
 PODs **usually** have a 1:1 relationship with containers running your application. To scale UP you create new PODs and to scale down you delete PODs. You do not add additional containers to an existing POD to scale your application.
@@ -205,14 +228,20 @@ The two containers can also communicate with each other directly by referring to
 
 
 
-# REPLICACONTROLLERs
+
+
+# CONTROLLERS
+
+## REPLICACONTROLLERs
+
+[ReplicationController](https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/)
 
 **Controllers** are the brain behind Kubernetes. They are processes that monitor kubernetes objects and respond accordingly. 
 
 Further we will discuss about one controller in particular. And that is the Replication Controller.
 
 
-## High Availability
+### High Availability
 
 Let’s go back to our first scenario were we had a single POD running our application. What if for some reason, our application crashes and the POD fails? Users will no longer be able to access our application. 
 
@@ -225,7 +254,7 @@ Even if you have a single POD, the replication controller can help by automatica
 Thus the replication controller ensures that the specified number of PODs are running at all times. Even if it’s just 1 or 100.
 
 
-## Load balancing
+### Load balancing
 
 Another reason we need replication controller is to create multiple PODs to share the load across them. 
 
@@ -235,7 +264,7 @@ As you can see, the replication controller spans across multiple nodes in the cl
 
 
 
-## Replication Controller vs. Replica Set
+### Replication Controller vs. Replica Set
 
 It’s important to note that there are two similar terms: Replication Controller and Replica Set. 
 
@@ -250,8 +279,9 @@ However, whatever we discussed in the previous few slides remain applicable to b
 
 
 
-# REPLICASETs
+## REPLICASETs
 
+[ReplicaSet](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)
 
 It is very similar to replication controller.
 
@@ -263,9 +293,58 @@ Replica set requires a selector definition.
 The selector section helps the replicaset identify what pods fall under it. But why would you have to specify what PODs fall under it, if you have provided the contents of the pod-definition file itself in the template? It’s BECAUSE, replica set can ALSO manage pods that were not created as part of the replicaset creation. Say for example, there were pods created BEFORE the creation of the ReplicaSet that match the labels specified in the selector, the replica set will also take THOSE pods into consideration when creating the replicas.
 
 
-## LABELS AND SELECTORS
+### LABELS AND SELECTORS
 
 ![Lables and Selectors](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/K8S_labels_selectors.png "Labels and Selectors")
+
+
+
+
+## DEPLOYMENTs
+
+[Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+
+
+A **Deployment** controller provides declarative updates for Pods and ReplicaSets.
+
+You describe a desired state in a Deployment object, and the Deployment controller changes the actual state to the desired state at a controlled rate. 
+
+You can define Deployments to create new ReplicaSets, or to remove existing Deployments and adopt all their resources with new Deployments.
+
+
+![Deployments](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/K8S_deployment.png "Deployments")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
