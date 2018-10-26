@@ -317,6 +317,17 @@ You can define Deployments to create new ReplicaSets, or to remove existing Depl
 
 
 
+# UPGRADE APP
+
+## Rollouts and Versioning
+
+Deployment strategy
+
+![Deployment strategy](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/k8s_deployment_strategy.png "Deployment strategy")
+
+Recreate vs RollingUpdate
+
+![Recreate vs RollingUpdate](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/k8s_rolling_replace.png "Recreate vs RollingUpdate")
 
 
 
