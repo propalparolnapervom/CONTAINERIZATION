@@ -317,7 +317,7 @@ You can define Deployments to create new ReplicaSets, or to remove existing Depl
 
 
 
-# UPGRADE APP
+# UPGRADE/ROLLBACK APP
 
 ## Deployment strategy
 
@@ -336,11 +336,24 @@ Recreate vs RollingUpdate
 ![Recreate vs RollingUpdate](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/k8s_rolling_replace.png "Recreate vs RollingUpdate")
 
 
+## UPGRADE
 
 
+![Upgrade](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/k8s_upgrade.png "Upgrage")
+
+Let’s look at how a deployment performs an upgrade under the hoods. When a new deployment is created, say to deploy 5 replicas, it first creates a Replicaset automatically, which in turn creates the number of PODs required to meet the number of replicas. When you upgrade your application as we saw in the previous slide, the kubernetes deployment object creates a NEW replicaset under the hoods and starts deploying the containers there. At the same time taking down the PODs in the old replica-set following a RollingUpdate strategy.
+
+This can be seen when you try to list the replicasets using the kubectl get replicasets command. Here we see the old replicaset with 0 PODs and the new replicaset with 5 PODs.
 
 
+## ROLLBACK
 
+![Rollback](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/k8s_rollback.png "Rollback")
+
+
+Say for instance once you upgrade your application, you realize something isn’t very right. Something’s wrong with the new version of build you used to upgrade. So you would like to rollback your update. Kubernetes deployments allow you to rollback to a previous revision. To undo a change run the command kubectl rollout undo followed by the name of the deployment. The deployment will then destroy the PODs in the new replicaset and bring the older ones up in the old replicaset. And your application is back to its older format.
+
+When you compare the output of the kubectl get replicasets command, before and after the rollback, you will be able to notice this difference. Before the rollback the first replicaset had 0 PODs and the new replicaset had 5 PODs and this is reversed after the rollback is finished.
 
 
 
