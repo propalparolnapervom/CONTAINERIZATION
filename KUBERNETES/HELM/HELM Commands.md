@@ -2,12 +2,16 @@
 
 # CHARTs
 
-Create initial (template) chart
+**Create**
+
+Create a new chart with the given name
 ```
 helm create xbs-chart
 ```
 
-Install a chart archive
+**Install** 
+
+Install a chart archive.
 
 > There are five different ways you can express the chart you want to install:
 
@@ -25,7 +29,27 @@ helm install xbs-chart
 ```
 
 
+**List**
 
+List releases
+```
+helm list
+```
+
+**Status**
+
+Dislpay status of the specific release (use `<release name>`, not `<chart name>`)
+```
+helm status nihilist-llama
+```
+
+
+**Delete**
+
+Delete the release from Kubernetes (use `<release name>`, not `<chart name>`)
+```
+helm delete xbs-chart
+```
 
 
 
