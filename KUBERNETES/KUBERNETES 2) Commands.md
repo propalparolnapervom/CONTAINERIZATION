@@ -275,7 +275,26 @@ kubectl delete deployments xbs-dmpnt
 
 
 
+# DEPLOY PROCESS
 
+## Apply
+
+Apply a configuration to a resource by filename or stdin. 
+
+The resource name must be specified. This resource will be created if it doesn't exist yet. 
+
+To use `apply`, always create the resource initially with either `apply` or `create --save-config`.
+```
+kubectl apply -f xbs-chart/templates/d.yaml
+```
+
+
+## Rollout
+
+See a history of rollout.
+```
+kubectl rollout history deploy/xbs-helm-dpmnt2
+```
 
 
 
