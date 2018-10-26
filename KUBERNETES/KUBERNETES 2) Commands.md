@@ -3,7 +3,7 @@
 
 Deploy an application on the cluster
 ```
-kubectl run
+kubectl run nginx --image=nginx
 ```
 
 View information about the cluster
@@ -220,6 +220,20 @@ kubectl delete rs xbs-rs
 
 # DEPLOYMENTs
 
+
+## CREATE DEPLOYMENTs
+
+Create deployment (explicitly)
+```
+kubectl create -f deploy-definition.yml
+```
+
+Create deployment (inplicitily)
+```
+kubectl run nginx --image=nginx
+```
+
+
 ## LIST DEPLOYMENTs
 
 List all Deployments
@@ -263,21 +277,7 @@ kubectl scale --replicas=6 -f dpmnt-creation.yml
 
 
 
-
-## DELETE DEPLOYMENTs
-
-Delete specific Deployment (PODs inside DEPLOYMENT will be destroyed as well)
-```
-kubectl delete deploy xbs-dmpnt
-
-kubectl delete deployments xbs-dmpnt
-```
-
-
-
-# DEPLOY PROCESS
-
-## Apply
+## APPLY DEPLOYMENTs
 
 Apply a configuration to a resource by filename or stdin. 
 
@@ -289,7 +289,7 @@ kubectl apply -f xbs-chart/templates/d.yaml
 ```
 
 
-## Undo
+## UNDO DEPLOYMENTs
 
 ```
 kubectl rollout undo deploy/xbs-helm-dpmnt2
@@ -301,6 +301,14 @@ kubectl rollout history deploy/xbs-helm-dpmnt2
 ```
 
 
+## DELETE DEPLOYMENTs
+
+Delete specific Deployment (PODs inside DEPLOYMENT will be destroyed as well)
+```
+kubectl delete deploy xbs-dmpnt
+
+kubectl delete deployments xbs-dmpnt
+```
 
 
 
