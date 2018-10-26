@@ -319,9 +319,15 @@ You can define Deployments to create new ReplicaSets, or to remove existing Depl
 
 # UPGRADE APP
 
-## Rollouts and Versioning
+## Deployment strategy
 
-Deployment strategy
+There are two types of deployment strategies. Say for example you have 5 replicas of your web application instance deployed. 
+
+One way to upgrade these to a newer version is to destroy all of these and then create newer versions of application instances. Meaning first, destroy the 5 running instances and then deploy 5 new instances of the new application version. The problem with this as you can imagine, is that during the period after the older versions are down and before any newer version is up, the application is down and inaccessible to users. This strategy is known as the **Recreate** strategy, and thankfully this is NOT the default deployment strategy.
+
+The second strategy is were we do not destroy all of them at once. Instead we take down the older version and bring up a newer version one by one. This way the application never goes down and the upgrade is seamless.
+
+Remember, if you do not specify a strategy while creating the deployment, it will assume it to be **Rolling Update**. In other words, RollingUpdate is the default Deployment Strategy.
 
 ![Deployment strategy](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/k8s_deployment_strategy.png "Deployment strategy")
 
