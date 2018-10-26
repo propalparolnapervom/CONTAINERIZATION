@@ -289,7 +289,11 @@ kubectl apply -f xbs-chart/templates/d.yaml
 ```
 
 
-## Rollout
+## Undo
+
+```
+kubectl rollout undo deploy/xbs-helm-dpmnt2
+```
 
 See a history of rollout.
 ```
