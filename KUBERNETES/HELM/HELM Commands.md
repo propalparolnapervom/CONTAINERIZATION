@@ -4,9 +4,15 @@
 
 **Create**
 
-Create a new chart with the given name
+Create a new chart with the random name (from <xbs-cart> dir)
 ```
 helm create xbs-chart
+```
+
+Create a new chart with the specific name (from <xbs-cart> dir)
+```
+cd <xbs-cart>
+helm install --name email-autodiscover .
 ```
 
 **Install** 
