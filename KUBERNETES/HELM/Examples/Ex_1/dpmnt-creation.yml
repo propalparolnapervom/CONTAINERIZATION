@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xbs-dpmnt
+  labels:
+    app: xbs-app-dpmnt
+    type: front-end-dpmnt
+spec:
+  template:
+    metadata:
+      name: xbs-pod
+      labels:
+        app: xbs-app-pod
+        type: front-end-dpmnt
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx
+  replicas: 3
+  selector:
+    matchLabels:
+      type: front-end-dpmnt

@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ quote $.Values.autodiscoverPodName }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ quote $.Values.autodiscoverPodName }}
+        namespace: {{ quote $.Release.Namespace }}
+    spec:
+      containers:
+      - name: {{ quote $.Values.autodiscoverPodName }}
+        image: "{{$.Values.imageServer}}/{{$.Values.imageName}}:{{$.Values.imageVersion}}"
+        ports:
+          - containerPort: 80
+        resources:
+          limits:
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      terminationGracePeriodSeconds: 30
+      imagePullSecrets:
+        - name: {{ quote $.Values.pullSecret }}

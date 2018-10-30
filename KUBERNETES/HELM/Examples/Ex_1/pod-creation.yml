@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: xbs-pod
+  labels:
+      app: random-name-app
+      type: for-example-front-end
+spec:
+  containers:
+    - name: container-name
+      image: nginx

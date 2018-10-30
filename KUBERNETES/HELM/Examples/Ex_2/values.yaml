@@ -1,0 +1,6 @@
+imageServer: quay.io/repo
+pullSecret: something-pull-secret
+
+autodiscoverPodName: email-autodiscover
+imageName: email-autodiscover
+imageVersion: latest
