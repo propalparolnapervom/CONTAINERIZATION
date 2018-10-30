@@ -37,9 +37,18 @@ helm install xbs-chart
 
 **List**
 
-List releases
+List running releases
 ```
 helm list
+
+helm ls
+```
+
+List deleted releases (which left for rollback)
+```
+helm list -a
+
+helm ls -a
 ```
 
 **Status**
@@ -52,9 +61,16 @@ helm status nihilist-llama
 
 **Delete**
 
-Delete the release from Kubernetes (use `<release name>`, not `<chart name>`)
+Delete the release from Kubernetes (use `<release name>`, not `<chart name>`):
+
+1. Partially (to leave info for rollback)
 ```
 helm delete xbs-chart
+```
+
+2. Fully (to remove all info, even one for rollback)
+```
+helm delete --purge xbs-chart
 ```
 
 
