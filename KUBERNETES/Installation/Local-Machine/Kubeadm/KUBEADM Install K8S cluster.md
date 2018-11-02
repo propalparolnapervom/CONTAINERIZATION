@@ -2,7 +2,7 @@
 
 K8S cluster installation steps via Kubeadm
 
-![K8S cluster installation steps](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/k8s_cluster_inst_steps.png.PNG "K8S cluster installation steps")
+![K8S cluster installation steps](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/k8s_cluster_inst_steps.png "K8S cluster installation steps")
 
 
 
