@@ -89,7 +89,12 @@ sudo yum-config-manager --disable docker-ce-edge
 sudo yum-config-manager --disable docker-ce-test
 ```
 
+#### Avoid Errors
 
+To avoid “Requires: container-selinux >= 2.9”  error:
+```
+sudo yum install -y http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.42-1.gitad8f0f7.el7.noarch.rpm
+```
 
 
 #### 2.2 Install Docker CE
@@ -97,7 +102,7 @@ sudo yum-config-manager --disable docker-ce-test
 
 1. Install the **latest version** of Docker CE, or go to the next step to install a **specific version**
 ```
-sudo yum install docker-ce
+sudo yum install docker-ce -y
 
       ...
       Installed:
