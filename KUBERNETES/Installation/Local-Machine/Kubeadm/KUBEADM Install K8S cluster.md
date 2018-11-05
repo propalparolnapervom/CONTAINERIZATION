@@ -139,7 +139,7 @@ Unless otherwise specified, `kubeadm` uses the network interface associated with
 
 To use a different network interface, specify the **--apiserver-advertise-address=<ip-address>** argument to `kubeadm init`. 
 
-Currently we're gonna specify our static IP, which has been specially configured earlier for master node, so `--apiserver-advertise-address=192.168.50.10` will be added.
+Currently we're gonna specify our static IP, which has been specially configured earlier for master node, so `--apiserver-advertise-address=172.31.40.84` will be added.
 
 
 ## 4.3. Optional
@@ -149,15 +149,22 @@ Run following prior to verify connectivity to **gcr.io** registries.
 sudo su
 
 kubeadm config images pull
-
-      [config/images] Pulled k8s.gcr.io/kube-apiserver:v1.12.2
-      [config/images] Pulled k8s.gcr.io/kube-controller-manager:v1.12.2
-      [config/images] Pulled k8s.gcr.io/kube-scheduler:v1.12.2
-      [config/images] Pulled k8s.gcr.io/kube-proxy:v1.12.2
-      [config/images] Pulled k8s.gcr.io/pause:3.1
-      [config/images] Pulled k8s.gcr.io/etcd:3.2.24
-      [config/images] Pulled k8s.gcr.io/coredns:1.2.2
 ```
+
+Following Docker images will be downloaded as a result:
+```
+docker images
+
+      REPOSITORY                           TAG                 IMAGE ID            CREATED             SIZE
+      k8s.gcr.io/kube-proxy                v1.12.2             15e9da1ca195        12 days ago         96.5MB
+      k8s.gcr.io/kube-apiserver            v1.12.2             51a9c329b7c5        12 days ago         194MB
+      k8s.gcr.io/kube-controller-manager   v1.12.2             15548c720a70        12 days ago         164MB
+      k8s.gcr.io/kube-scheduler            v1.12.2             d6d57c76136c        12 days ago         58.3MB
+      k8s.gcr.io/etcd                      3.2.24              3cab8e1b9802        6 weeks ago         220MB
+      k8s.gcr.io/coredns                   1.2.2               367cdc8433a4        2 months ago        39.2MB
+      k8s.gcr.io/pause                     3.1                 da86e6ba6ca1        10 months ago       742kB
+```
+
 
 ## 4.4. Initialize Master node
 
@@ -173,7 +180,7 @@ swapoff -a
 
   #Run initialization
   
-kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.50.10
+kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=172.31.40.84
 
 
   #Enable swap (to make it once again enabled)
