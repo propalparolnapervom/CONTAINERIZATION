@@ -20,6 +20,12 @@ worker2
 | worker2      | 172.31.33.97      | 
 
 
+Hosts should have:
+  - 2 GB or more of RAM per machine. Any less leaves little room for your apps.
+  - 2 CPUs or more on the master
+  - Full network connectivity among all machines in the cluster. A public or private network is fine.
+  
+  
 ## If this is AWS
 
 ### SG
@@ -43,6 +49,8 @@ rm -f /tmp/add_host_name
 
 yum update -y
 ```
+
+
 
 
 
@@ -188,6 +196,15 @@ kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=172.
 swapon -a
 ```
 
+
+## 4.5. Post-initialization steps
+
+Only on Master node, as a Regular user:
+```
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
 
 
 
