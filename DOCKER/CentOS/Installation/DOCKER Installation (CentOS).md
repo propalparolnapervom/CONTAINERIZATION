@@ -50,7 +50,7 @@ sudo yum remove docker \
 
 ### 2. Install new Docker (using the repo)
 
-#### 2.1 SEt up the repo
+#### 2.1 Set up the repo
 
 1. Install required packages. 
 
