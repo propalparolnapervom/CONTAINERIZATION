@@ -281,7 +281,11 @@ Multiply ones
 docker rm $(docker ps -a -q -f status=exited)
 ```
 
+### LOGS
 
+```
+docker logs b36d62f81e30
+```
 
 ### NAMES
 
