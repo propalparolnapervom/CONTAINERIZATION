@@ -6,15 +6,49 @@ K8S cluster installation steps via Kubeadm
 
 # 1. Nodes
 
-Create 3 hosts (VMs, etc) with following hostnames:
-  - master
-  - worker1
-  - worker2
+Create 3 hosts (VMs, etc) with following hostnames and static (!!!) IPs:
 
-They have to have static IPs and hostnames.
+HOSTNAME  STATIC IP
+master
+worker1
+worker2
+
+| HOSTNAME        | STATIC IP | 
+| ------------- |:-------------:| 
+| master        | 172.31.40.84 | 
+| worker1      | 172.31.46.9      | 
+| worker2      | 172.31.33.97      | 
+
+
+## If this is AWS
+
+### SG
+
+Place hostnames to SG, where traffic is allowed between this IPs.
+
+### HOSTNAMES
+
+On each nodes do following
+```
+sudo su
+
+echo "echo 127.0.0.1   localhost > /etc/hosts" >> /tmp/add_host_name
+echo "echo 255.255.255.255 broadcasthost >> /etc/hosts" >> /tmp/add_host_name
+echo "echo ::1         localhost >> /etc/hosts" >> /tmp/add_host_name
+echo "echo 172.31.40.84 master >> /etc/hosts" >> /tmp/add_host_name
+echo "echo 172.31.46.9 worker1 >> /etc/hosts" >> /tmp/add_host_name
+echo "echo 172.31.33.97 worker2 >> /etc/hosts" >> /tmp/add_host_name
+bash /tmp/add_host_name
+rm -f /tmp/add_host_name
+
+yum update -y
+```
+
 
 
 # 2. Docker
+
+Go through the [Docker installation steps](https://github.com/propalparolnapervom/CONTAINERIZATION/blob/master/DOCKER/CentOS/Installation/DOCKER%20Installation%20(CentOS).md).
 
 Make sure Docker is installed on all nodes.
 
