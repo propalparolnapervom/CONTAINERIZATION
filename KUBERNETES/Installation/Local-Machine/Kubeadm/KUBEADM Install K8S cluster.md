@@ -55,7 +55,7 @@ Make sure Docker is installed on all nodes.
 
 # 3. Kubeadm
 
-[Intall kubeadm](https://kubernetes.io/docs/setup/independent/install-kubeadm/)
+[kubeadm installation steps](https://kubernetes.io/docs/setup/independent/install-kubeadm/)
 
 You will install these packages on all of your machines:
 
