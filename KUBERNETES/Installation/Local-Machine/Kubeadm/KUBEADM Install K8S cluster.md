@@ -146,6 +146,8 @@ Currently we're gonna specify our static IP, which has been specially configured
 
 Run following prior to verify connectivity to **gcr.io** registries.
 ```
+sudo su
+
 kubeadm config images pull
 
       [config/images] Pulled k8s.gcr.io/kube-apiserver:v1.12.2
