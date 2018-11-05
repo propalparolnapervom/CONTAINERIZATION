@@ -1,4 +1,4 @@
-# KUBERNETES COMMANDS
+# KUBECTL COMMANDS
 
 
 Deploy an application on the cluster
