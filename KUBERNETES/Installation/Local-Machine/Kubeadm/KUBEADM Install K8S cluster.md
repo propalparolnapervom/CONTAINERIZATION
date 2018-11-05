@@ -199,7 +199,7 @@ swapon -a
 
 ## 4.5. Post-initialization steps
 
-Only on Master node, as a Regular user:
+To make `kubectl` work for your non-root user, run on Master node these commands, which are also part of the kubeadm init output:
 ```
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -207,6 +207,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
 
+
+# P
 
 
 
