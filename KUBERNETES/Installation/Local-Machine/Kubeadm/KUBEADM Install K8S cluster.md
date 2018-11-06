@@ -8,16 +8,12 @@ K8S cluster installation steps via Kubeadm
 
 Create 3 hosts (VMs, etc) with following hostnames and static (!!!) IPs:
 
-HOSTNAME  STATIC IP
-master
-worker1
-worker2
 
 | HOSTNAME        | STATIC IP | 
 | ------------- |:-------------:| 
-| master        | 172.31.40.84 | 
-| worker1      | 172.31.46.9      | 
-| worker2      | 172.31.33.97      | 
+| master        | 172.31.34.236 | 
+| worker1      | 172.31.32.188      | 
+| worker2      | 172.31.40.172      | 
 
 
 Hosts should have:
@@ -41,9 +37,9 @@ sudo su
 echo "echo 127.0.0.1   localhost > /etc/hosts" >> /tmp/add_host_name
 echo "echo 255.255.255.255 broadcasthost >> /etc/hosts" >> /tmp/add_host_name
 echo "echo ::1         localhost >> /etc/hosts" >> /tmp/add_host_name
-echo "echo 172.31.40.84 master >> /etc/hosts" >> /tmp/add_host_name
-echo "echo 172.31.46.9 worker1 >> /etc/hosts" >> /tmp/add_host_name
-echo "echo 172.31.33.97 worker2 >> /etc/hosts" >> /tmp/add_host_name
+echo "echo 172.31.34.236 master >> /etc/hosts" >> /tmp/add_host_name
+echo "echo 172.31.32.188 worker1 >> /etc/hosts" >> /tmp/add_host_name
+echo "echo 172.31.40.172 worker2 >> /etc/hosts" >> /tmp/add_host_name
 bash /tmp/add_host_name
 rm -f /tmp/add_host_name
 
@@ -208,10 +204,45 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 
 
-# P
+# 5. Installing a pod network add-on
+
+You must install a pod network add-on so that your pods can communicate with each other.
+
+The network must be deployed before any applications. 
+
+Also, **CoreDNS** will not start up before a network is installed. 
+
+`kubeadm` only supports **Container Network Interface (CNI**) based networks (and does not support **kubenet**).
 
 
+## Install network
 
+**Flannel** has been chosen earlier, so for this POD network do following:
+
+On the Master node, as regular user:
+```
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
+```
+
+Necessary set of Kubernetes services will be installed to setup internal networking:
+```
+      clusterrole.rbac.authorization.k8s.io/flannel created
+      clusterrolebinding.rbac.authorization.k8s.io/flannel created
+      serviceaccount/flannel created
+      configmap/kube-flannel-cfg created
+      daemonset.extensions/kube-flannel-ds-amd64 created
+      daemonset.extensions/kube-flannel-ds-arm64 created
+      daemonset.extensions/kube-flannel-ds-arm created
+      daemonset.extensions/kube-flannel-ds-ppc64le created
+      daemonset.extensions/kube-flannel-ds-s390x created
+```
+
+Once a pod network has been installed, you can confirm that it is working by checking that the CoreDNS pod is Running in the output of following command. And once the CoreDNS pod is up and running, you can continue by joining your nodes.
+```
+kubectl get pods --all-namespaces
+```
+
+If your network is not working or CoreDNS is not in the Running state, check out our [troubleshooting docs](https://kubernetes.io/docs/setup/independent/troubleshooting-kubeadm/).
 
 
 
