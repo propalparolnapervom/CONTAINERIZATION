@@ -325,7 +325,7 @@ The Nginx Pod has now been deployed under the Kubernetes cluster and it's access
 
 
 Now access from the web browser (public IP of the Master node):
-  - From Master: [http://172.31.34.236:31813](http://172.31.34.236:31813/)
+  - From Master: [http://3.120.26.103:31813](http://3.120.26.103:31813/)
   - From Worker1: [http://18.184.60.46:31813](http://18.184.60.46:31813/)
   - From Worker2: [http://18.196.136.158:31813](http://18.196.136.158:31813/)
 
