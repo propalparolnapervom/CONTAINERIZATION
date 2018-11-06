@@ -143,7 +143,7 @@ Unless otherwise specified, `kubeadm` uses the network interface associated with
 
 To use a different network interface, specify the **--apiserver-advertise-address=<ip-address>** argument to `kubeadm init`. 
 
-Currently we're gonna specify our static IP, which has been specially configured earlier for master node, so `--apiserver-advertise-address=172.31.40.84` will be added.
+Currently we're gonna specify our static IP, which has been specially configured earlier for master node, so `--apiserver-advertise-address=172.31.34.236` will be added.
 
 
 ## 4.3. Optional
@@ -184,13 +184,15 @@ swapoff -a
 
   #Run initialization
   
-kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=172.31.40.84
+kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=172.31.34.236
 
 
   #Enable swap (to make it once again enabled)
   
 swapon -a
 ```
+
+Remember a command for joining to the Master.
 
 
 ## 4.5. Post-initialization steps
@@ -240,13 +242,95 @@ Necessary set of Kubernetes services will be installed to setup internal network
 Once a pod network has been installed, you can confirm that it is working by checking that the CoreDNS pod is Running in the output of following command. And once the CoreDNS pod is up and running, you can continue by joining your nodes.
 ```
 kubectl get pods --all-namespaces
+
+    NAMESPACE     NAME                                                                     READY   STATUS    RESTARTS   AGE
+    kube-system   coredns-576cbf47c7-2v9kw                                                 1/1     Running   0          100s
+    kube-system   coredns-576cbf47c7-dcnkx                                                 1/1     Running   0          100s
+    kube-system   etcd-ip-172-31-34-236.eu-central-1.compute.internal                      1/1     Running   0          61s
+    kube-system   kube-apiserver-ip-172-31-34-236.eu-central-1.compute.internal            1/1     Running   0          59s
+    kube-system   kube-controller-manager-ip-172-31-34-236.eu-central-1.compute.internal   1/1     Running   0          55s
+    kube-system   kube-flannel-ds-amd64-m4f6f                                              1/1     Running   0          20s
+    kube-system   kube-proxy-n525n                                                         1/1     Running   0          100s
+    kube-system   kube-scheduler-ip-172-31-34-236.eu-central-1.compute.internal            1/1     Running   0          39s
 ```
 
 If your network is not working or CoreDNS is not in the Running state, check out our [troubleshooting docs](https://kubernetes.io/docs/setup/independent/troubleshooting-kubeadm/).
 
 
 
+# 6. Join Worker nodes to Master
 
+On each Worker node, use command that was remembered from run of Master initialization.
+```
+sudo kubeadm join 172.21.32.226:7443 --token zwrf.ufy85eolf6rx --discovery-token-ca-cert-hash sha256:0ff3dbb8efc092ea80bda8
+```
+
+
+# 7. RESULT TESTING 
+
+For example, [this](https://www.howtoforge.com/tutorial/centos-kubernetes-docker-cluster/) step.
+
+
+Let's test by deploying the Nginx pod to the kubernetes cluster.
+
+
+Master node, create new deployment named `nginx` using the `kubectl` command.
+```
+kubectl create deployment nginx --image=nginx
+```
+
+
+To see details of the `nginx` deployment specification, run the following command.
+```
+kubectl describe deployment nginx
+```
+
+
+Expose the `nginx` pod accessible via the internet. And we need to create new service NodePort for this.
+```
+kubectl create service nodeport nginx --tcp=80:80
+```
+
+
+Make sure there is no error.
+
+Now check the nginx service nodeport and IP using the kubectl command below.
+```
+kubectl get pods
+
+      NAME                    READY   STATUS    RESTARTS   AGE
+      nginx-55bd7c9fd-47gxn   1/1     Running   0          11m
+
+
+kubectl get svc
+
+      NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+      kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP        63m
+      nginx        NodePort    10.102.175.105   <none>        80:31813/TCP   9m55s
+```
+
+
+Now you will get the `nginx` pod is running under cluster IP address '10.102.175.105' port 80, and the node main IP address ('172.31.x.x' in ousr case) on port '31813'.
+
+
+From the Master, test Worker nodes
+```
+curl worker1:31813
+
+curl worker2:31813
+```
+
+The Nginx Pod has now been deployed under the Kubernetes cluster and it's accessible via the internet.
+
+
+
+Now access from the web browser (public IP of the Master node):
+  - From Master: [http://172.31.34.236:31813](http://172.31.34.236:31813/)
+  - From Worker1: [http://18.184.60.46:31813](http://18.184.60.46:31813/)
+  - From Worker2: [http://18.196.136.158:31813](http://18.196.136.158:31813/)
+
+
+The Kubernetes cluster Installation and configuration on CentOS 7 has been completed successfully.
 
 
 
