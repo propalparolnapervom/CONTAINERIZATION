@@ -131,6 +131,14 @@ Destroy specific POD (by POD label)
 kubectl delete pods -l app=random-name-app
 ```
 
+## GET PORT OF POD
+
+```
+kubectl get pods email-autodiscover --template=‘{{(index (index .spec.containers 0).ports 0).containerPort}}{{“\n”}}’
+
+      80
+```
+
 
 
 # RCs
