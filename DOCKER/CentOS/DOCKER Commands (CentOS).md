@@ -374,9 +374,29 @@ docker run --net my_first_network ppnp/my_first_image
 
 
 
+## VARIABLES
 
+[Default Env vars](https://docs.docker.com/compose/env-file/)
 
+These syntax rules apply to the .env file:
 
+Compose expects each line in an env file to be in VAR=VAL format.
+Lines beginning with # are processed as comments and ignored.
+Blank lines are ignored.
+There is no special handling of quotation marks. This means that they are part of the VA
+
+**Use env file with Docker container**
+
+Create env file with random name in following format
+```
+NAME=sergii
+SONAME=not_sergii
+```
+
+Use it during Docker container creating:
+```
+docker run --env-file=env.env hello-world
+```
 
 
 
