@@ -63,6 +63,10 @@ List a specific POD in JSON output format
 kubectl get -o json pod nginx-65899c769f-v8r2p
 ```
 
+List just POD names
+```
+kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}'
+```
 
 
 ## DESCRIBE PODs
