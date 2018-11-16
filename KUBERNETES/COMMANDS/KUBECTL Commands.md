@@ -138,11 +138,55 @@ kubectl delete pods -l app=random-name-app
 ## GET PORT OF POD
 
 ```
+
+kubectl describe pods email-autodiscover | grep -i port
+      
+      Port:           80/TCP
+      
+      
+      
+      #OR
+      
+      
 kubectl get pods email-autodiscover --template=‘{{(index (index .spec.containers 0).ports 0).containerPort}}{{“\n”}}’
 
       80
 ```
 
+
+## POD LOGs
+
+Anything that the application would normally send to `STDOUT` becomes logs for the container within the Pod. 
+
+View logs of specific POD 
+```
+      #1. If POD has 1 Container:
+            kubectl logs <POD_NAME>
+            
+kubectl logs vessel-responsibilities-7bdff94968-xt7lw
+
+
+      #2. If POD has >1 Containers:
+            kubectl logs <POD_NAME> <CONTAINER_NAME>
+            
+kubectl logs vessel-responsibilities-7bdff94968-xt7lw vessel-responsibilities
+```
+
+## EXEC
+
+Go inside POD's Container
+```
+      #1. If POD has 1 Container:
+            kubectl exec -ti <POD_NAME> bash
+            
+kubectl exec -ti vessel-responsibilities-7bdff94968-xt7lw bash
+
+
+      #2. If POD has >1 Containers:
+            kubectl exec -ti <POD_NAME> <CONTAINER_NAME> bash
+                        
+kubectl exec -ti vessel-responsibilities-7bdff94968-xt7lw vessel-responsibilities bash
+```
 
 
 # RCs
