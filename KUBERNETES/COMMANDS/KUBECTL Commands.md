@@ -320,9 +320,20 @@ kubectl delete deployments xbs-dmpnt
 
 
 
+# CONFIGMAPs
 
 
+## VIEW CONFIGMAPs
 
+List Configmaps from all namespaces
+```
+kubectl get configmaps --all-namespaces
+```
+
+View specific Configmap from specific namespace in `yaml`-based format
+```
+kubectl get configmaps --namespace kube-system weave-net -o yaml
+```
 
 
 
