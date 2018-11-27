@@ -367,6 +367,31 @@ kubectl delete deployments xbs-dmpnt
 ```
 
 
+# SERVICEs
+
+## VIEW  SERVICEs
+
+List services
+```
+kubectl get services
+```
+
+Describe
+```
+kubectl describe services/webapp1-clusterip-svc
+```
+
+
+
+## VIEW IP
+
+Get only IP of specific service
+```
+kubectl get services/webapp1-clusterip-svc -o go-template='{{(index .spec.clusterIP)}}'
+```
+
+
+
 
 # CONFIGMAPs
 
