@@ -356,6 +356,24 @@ Say for instance once you upgrade your application, you realize something isn’
 When you compare the output of the kubectl get replicasets command, before and after the rollback, you will be able to notice this difference. Before the rollback the first replicaset had 0 PODs and the new replicaset had 5 PODs and this is reversed after the rollback is finished.
 
 
+# NETWORKING
+
+Kubernetes have advanced networking capabilities that allow Pods and Services to communicate inside the cluster's network and externally.
+
+In this scenario, you will learn the following types of Kubernetes services.
+
+  Cluster IP
+
+  Target Ports
+
+  NodePort
+
+  External IPs
+
+  Load Balancer
+
+
+
 
 
 
