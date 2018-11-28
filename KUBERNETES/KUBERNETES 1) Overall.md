@@ -364,19 +364,46 @@ When you compare the output of the kubectl get replicasets command, before and a
 
 The set of *Pods* accessed via a *Service* is **based on a Label Selector**.
 
+_________
+
+Kubernetes Services enable communication between various components within and outside of the application.
+
+Kubernetes Services helps us connect applications together with other applications or users. 
 
 
 
-# NETWORKING
+
+## NETWORKING
 
 [Interactive Steps](https://www.katacoda.com/courses/kubernetes/networking-introduction)
 
 
+When a kubernetes cluster is SETUP, kubernetes does NOT automatically setup any kind of networking to handle these issues. 
+
+As a matter of fact, kubernetes expects US to setup networking to meet certain fundamental requirements. 
+
+Some of these are:
+  - all the containers or PODs in a kubernetes cluster MUST be able to communicate with one another without having to configure NAT
+  - All nodes must be able to communicate with containers and all containers must be able to communicate with the nodes in the cluster. 
+  
+Kubernetes expects US to setup a networking solution that meets these criteria.
+
+Fortunately, we don’t have to set it up ALL on our own as there are multiple pre-built solutions available. Some of them are:
+  - cisco ACI networks
+  - Cilium
+  - Big Cloud Fabric
+  - Flannel
+  - Vmware NSX-t
+  - Calico
+  - etc
+__________
+
 Kubernetes have advanced networking capabilities that allow Pods and Services to communicate inside the cluster's network and externally.
 
-In this scenario, you will learn the following *types of Kubernetes services*:
 
 
+
+## SERVICE TYPES
 
 ## 1) Cluster IP
 
@@ -388,9 +415,12 @@ By having a single IP address it enables the service to be load balanced across 
 
 Service load balancers across multiple Pods based on the common **label selector**.
 
+______
+
+So the Service creates a virtual IP inside the cluster to enable communication between different services such as a set of front-end servers to a set of backend- servers.
 
 
-### Target Ports
+______
 
 Target ports allows us to separate the port *the service is available on* from the port *the application is listening on*.
 
@@ -409,9 +439,17 @@ While *TargetPort* and *ClusterIP* make it available to inside the cluster, the 
 
 No matter which Node within the cluster is accessed, the service will be reachable based on the port number defined.
 
+So the Service makes an internal POD accessible on a Port on the Node.
 
+![Type: NodePort](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/k8s_services_nodeport.png "Type: NodePort")
 
+Several PODs on 1 node:
 
+![Type: NodePort (multiPOD)](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/k8s_svc_nodeport_multi.png "Type: NodePort (multiPOD)")
+
+1 POD on several nodes:
+
+![Type: NodePort (multiNOD)](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/k8s_svc_nodeport_multi_node.png "Type: NodePort (multiNOD)")
 
 
 ### External IPs
@@ -429,8 +467,11 @@ This will be issued via a Load Balancer such as ELB.
 
 This allows additional public IP addresses to be allocated to a Kubernetes cluster without interacting directly with the cloud provider.
 
+_____
 
+LoadBalancer, were it provisions a load balancer for our service in supported cloud providers. 
 
+A good example of that would be to distribute load across different web servers
 
 
 
