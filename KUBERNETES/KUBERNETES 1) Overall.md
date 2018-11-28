@@ -356,21 +356,81 @@ Say for instance once you upgrade your application, you realize something isn’
 When you compare the output of the kubectl get replicasets command, before and after the rollback, you will be able to notice this difference. Before the rollback the first replicaset had 0 PODs and the new replicaset had 5 PODs and this is reversed after the rollback is finished.
 
 
+
+
+# SERVICES
+
+**Services** are an abstract that defines a policy and approach on how to access a set of Pods. 
+
+The set of *Pods* accessed via a *Service* is **based on a Label Selector**.
+
+
+
+
 # NETWORKING
+
+[Interactive Steps](https://www.katacoda.com/courses/kubernetes/networking-introduction)
+
 
 Kubernetes have advanced networking capabilities that allow Pods and Services to communicate inside the cluster's network and externally.
 
-In this scenario, you will learn the following types of Kubernetes services.
+In this scenario, you will learn the following *types of Kubernetes services*:
 
-  Cluster IP
 
-  Target Ports
 
-  NodePort
+## 1) Cluster IP
 
-  External IPs
+**Cluster IP** is the **default approach** when creating a Kubernetes Service. 
 
-  Load Balancer
+The service is allocated an internal IP that other components can use to access the pods.
+
+By having a single IP address it enables the service to be load balanced across multiple Pods.
+
+Service load balancers across multiple Pods based on the common **label selector**.
+
+
+
+### Target Ports
+
+Target ports allows us to separate the port *the service is available on* from the port *the application is listening on*.
+
+**Port** is how the application will be accessed from the outside.
+
+**TargetPort** is the Port which the application is configured to listen on. 
+
+
+
+
+
+
+## 2) NodePort
+
+While *TargetPort* and *ClusterIP* make it available to inside the cluster, the **NodePort** exposes the service on each *Node’s IP* via the defined static port.
+
+No matter which Node within the cluster is accessed, the service will be reachable based on the port number defined.
+
+
+
+
+
+
+### External IPs
+
+Another approach to making a service available outside of the cluster is via External IP addresses.
+
+
+
+
+## 3) Load Balancer
+
+When running in the cloud, such as EC2 or Azure, it's possible to configure and assign a Public IP address issued via the cloud provider. 
+
+This will be issued via a Load Balancer such as ELB. 
+
+This allows additional public IP addresses to be allocated to a Kubernetes cluster without interacting directly with the cloud provider.
+
+
+
 
 
 
