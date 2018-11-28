@@ -420,7 +420,7 @@ ______
 So the Service creates a virtual IP inside the cluster to enable communication between different services such as a set of front-end servers to a set of backend- servers.
 
 
-______
+![Type: ClusterIP](https://github.com/propalparolnapervom/OVERALL/blob/master/Pictures/k8s_svc_clusterip.png "Type: ClusterIP")
 
 Target ports allows us to separate the port *the service is available on* from the port *the application is listening on*.
 
