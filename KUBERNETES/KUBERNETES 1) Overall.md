@@ -476,9 +476,65 @@ A good example of that would be to distribute load across different web servers
 
 
 
+## INGRESS
+
+[Hands-on steps](https://www.katacoda.com/courses/kubernetes/create-kubernetes-ingress-routes)
+
+Kubernetes have advanced networking capabilities that allow Pods and Services to communicate inside the cluster's network. 
+
+An **Ingress** enables inbound connections to the cluster, allowing external traffic to reach the correct Pod.
+
+Ingress enables:
+  - externally-reachable urls
+  - load balance traffic
+  - terminate SSL
+  - offer name based virtual hosting for a Kubernetes cluster
 
 
 
+### Ingress rules
+
+
+**Ingress** rules are an object type with Kubernetes. 
+
+The rules can be based on:
+  - a request host (domain)
+  - the path of the request
+  - a combination of both
+
+An example set of rules
+```
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: webapp-ingress
+spec:
+  rules:
+  - host: my.kubernetes.example
+    http:
+      paths:
+      - path: /webapp1
+        backend:
+          serviceName: webapp1-svc
+          servicePort: 80
+      - path: /webapp2
+        backend:
+          serviceName: webapp2-svc
+          servicePort: 80
+      - backend:
+          serviceName: webapp3-svc
+          servicePort: 80
+```
+
+The rules apply to requests for the host `my.kubernetes.example`. 
+
+Two rules are defined based on the path request with a single catch all definition. 
+
+Requests to the path `/webapp1` are forwarded onto the service `webapp1-svc`. 
+
+Likewise, the requests to `/webapp2` are forwarded to `webapp2-svc`. 
+
+If no rules apply, `webapp3-svc` will be used.
 
 
 
