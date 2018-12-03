@@ -536,10 +536,79 @@ Likewise, the requests to `/webapp2` are forwarded to `webapp2-svc`.
 
 If no rules apply, `webapp3-svc` will be used.
 
+What you've got:
+
+1.
+```
+kubectl get services --all-namespaces
+
+      NAMESPACE       NAME            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
+      default         kubernetes      ClusterIP   10.96.0.1        <none>        443/TCP                   6m
+      default         webapp1-svc     ClusterIP   10.107.161.185   <none>        80/TCP                   6m
+      default         webapp2-svc     ClusterIP   10.96.96.231     <none>        80/TCP                   6m
+      default         webapp3-svc     ClusterIP   10.104.189.243   <none>        80/TCP                   6m
+      kube-system     kube-dns        ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP                6m
+      nginx-ingress   nginx-ingress   NodePort    10.98.173.23     172.17.0.31   80:30978/TCP,443:31912/TCP   6m
+```
 
 
+2.
+```
+kubectl describe services/nginx-ingress -n nginx-ingress
+
+      Name:                     nginx-ingress
+      Namespace:                nginx-ingress
+      Labels:                   <none>
+      Annotations:              <none>
+      Selector:                 app=nginx-ingress
+      Type:                     NodePort
+      IP:                       10.98.173.23
+      External IPs:             172.17.0.31
+      Port:                     http  80/TCP
+      TargetPort:               80/TCP
+      NodePort:                 http  30978/TCP
+      Endpoints:                10.32.0.6:80
+      Port:                     https  443/TCP
+      TargetPort:               443/TCP
+      NodePort:                 https  31912/TCP
+      Endpoints:                10.32.0.6:443
+      Session Affinity:         None
+      External Traffic Policy:  Cluster
+      Events:                   <none>
+```
 
 
+3.
+```
+kubectl get ingress
+
+      NAME             HOSTS                   ADDRESS   PORTS     AGE
+      webapp-ingress   my.kubernetes.example             80        10m
+```
+
+
+4. 
+```
+kubectl describe ingress/webapp-ingress
+
+      Name:             webapp-ingress
+      Namespace:        default
+      Address:
+      Default backend:  default-http-backend:80 (<none>)
+      Rules:
+        Host                   Path  Backends
+        ----                   ----  --------
+        my.kubernetes.example
+                               /webapp1   webapp1-svc:80 (<none>)
+                               /webapp2   webapp2-svc:80 (<none>)
+                                          webapp3-svc:80 (<none>)
+      Annotations:
+      Events:
+        Type    Reason          Age                From                      Message
+        ----    ------          ----               ----                      -------
+        Normal  Updated         10m                nginx-ingress-controller  Configurationfor default/webapp-ingress was updated
+        Normal  AddedOrUpdated  10m (x2 over 10m)  nginx-ingress-controller  Configurationfor default/webapp-ingress was added or updated
+```
 
 
 
