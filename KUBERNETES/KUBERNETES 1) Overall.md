@@ -611,7 +611,22 @@ kubectl describe ingress/webapp-ingress
 ```
 
 
+Test:
+```
+curl -H "Host: my.kubernetes.example" 172.17.0.31/webapp1
 
+  <h1>This request was processed by host: webapp1-7d67d68676-vrq94</h1>
+
+
+curl -H "Host: my.kubernetes.example" 172.17.0.31/webapp2
+      
+      <h1>This request was processed by host: webapp2-64d4844b78-bldx2</h1>
+
+
+curl -H "Host: my.kubernetes.example" 172.17.0.31
+
+      <h1>This request was processed by host: webapp3-5b8ff7484d-jt2g9</h1>
+```
 
 
 
