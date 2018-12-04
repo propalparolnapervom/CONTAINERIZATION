@@ -563,16 +563,22 @@ The ingress [spec](https://git.k8s.io/community/contributors/devel/api-conventio
 Each http rule contains the following information (see example above):
 
   - An optional **host**. In this example, no host is specified, so the rule applies to all inbound HTTP traffic through the IP address is specified. If a host is provided (for example, foo.bar.com), the rules apply to that host.
-  - a list of **paths** (for example, /testpath), each of which has an associated backend defined with a serviceName and servicePort. Both the host and path must match the content of an incoming request before the loadbalancer will direct traffic to the referenced service.
-  - A **backend** is a combination of service and port names as described in the services doc. HTTP (and HTTPS) requests to the ingress matching the host and path of the rule will be sent to the listed backend.
+  - a list of **paths** (for example, /testpath), each of which has an associated backend defined with a **serviceName** and **servicePort**. Both the host and path must match the content of an incoming request before the loadbalancer will direct traffic to the referenced service.
+  - A **backend** is a combination of service and port names as described in the [services doc](https://kubernetes.io/docs/concepts/services-networking/service/). HTTP (and HTTPS) requests to the ingress matching the host and path of the rule will be sent to the listed backend.
 
 A **default backend** is often configured in an ingress controller that will service any requests that do not match a path in the spec.
 
+An ingress with no rules sends all traffic to a single default backend. The default backend is typically a configuration option of the ingress controller and is not specified in your ingress resources.
+
+If none of the hosts or paths match the HTTP request in the ingress objects, the traffic is routed to your default backend.
+
+______
 
 
 
+### Example set of rules
 
-Another example set of rules
+Sample set of Ingres rules
 ```
 apiVersion: extensions/v1beta1
 kind: Ingress
