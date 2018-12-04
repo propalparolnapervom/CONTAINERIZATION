@@ -74,6 +74,7 @@ Spec is a dictionary so add a property under it called containers, which is a li
 Run it to create a POD
 ```
 kubectl create -f pod-creation.yml
+```
 
 
 
