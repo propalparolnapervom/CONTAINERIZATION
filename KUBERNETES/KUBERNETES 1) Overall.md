@@ -478,31 +478,101 @@ A good example of that would be to distribute load across different web servers
 
 ## INGRESS
 
+[Official Ingress docs](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+
 [Hands-on steps](https://www.katacoda.com/courses/kubernetes/create-kubernetes-ingress-routes)
 
-Kubernetes have advanced networking capabilities that allow Pods and Services to communicate inside the cluster's network. 
+**Ingress** - API object that manages external access to the services in a cluster, typically HTTP. 
 
-An **Ingress** enables inbound connections to the cluster, allowing external traffic to reach the correct Pod.
+Traffic routing is controlled by rules defined on the ingress resource.
 
 Ingress enables:
   - externally-reachable urls
-  - load balance traffic
-  - terminate SSL
-  - offer name based virtual hosting for a Kubernetes cluster
+  - load balancing
+  - SSL termination
+  - name-based virtual hosting
+
+_________________
+
+An ingress does not expose arbitrary ports or protocols. 
+
+Exposing services other than HTTP and HTTPS to the internet typically uses a service of type [Service.Type=NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) or [Service.Type=LoadBalancer](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer).
+
+
+### Ingress controller
+
+[Official Docs](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-controllers)
+
+An **ingress controller** is responsible for fulfilling the ingress, usually with a loadbalancer, though it may also configure your edge router or additional frontends to help handle the traffic.
+
+In order for the ingress resource to work, the cluster must have an ingress controller running. 
+
+This is unlike other types of controllers, which run as part of the **kube-controller-manager** binary, and are typically started automatically with a cluster. 
+
+Choose the ingress controller implementation that best fits your cluster.
+
+Kubernetes as a project currently supports and maintains [GCE](https://git.k8s.io/ingress-gce/README.md) and [nginx](https://git.k8s.io/ingress-nginx/README.md) controllers.
+
+Additional controllers include:
+  - Contour is an Envoy based ingress controller provided and supported by Heptio.
+  - [Istio](https://istio.io/) based ingress controller [Control Ingress Traffic](https://istio.io/docs/tasks/traffic-management/ingress/).
+  - etc 
+
+______
+
+You may deploy [any number of ingress controllers](https://git.k8s.io/ingress-nginx/docs/user-guide/multiple-ingress.md#multiple-ingress-controllers) within a cluster.
+
+When you create an ingress, you should annotate each ingress with the appropriate [ingress-class](https://git.k8s.io/ingress-gce/examples/PREREQUISITES.md#ingress-class) to indicate which ingress controller should be used if more than one exists within your cluster. 
+
+If you do not define a class, your cloud provider may use a default ingress provider.
+
+
+### Ingress Resource
+
+[Example](https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource)
+
+A minimal ingress resource example:
+```
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /testpath
+        backend:
+          serviceName: test
+          servicePort: 80
+```
+
+Annotations [nginx.ingress.kubernetes.io*](https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrite/README.md) for Nginx.
+
+The ingress [spec](https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status) has all the information needed to configure a loadbalancer or proxy server. Most importantly, it contains a list of rules matched against all incoming requests. **Ingress resource only supports rules for directing HTTP traffic**.
 
 
 
 ### Ingress rules
 
 
-**Ingress** rules are an object type with Kubernetes. 
+**Ingress rules** are an object type with Kubernetes. 
 
-The rules can be based on:
-  - a request host (domain)
-  - the path of the request
-  - a combination of both
+Each http rule contains the following information (see example above):
 
-An example set of rules
+  - An optional **host**. In this example, no host is specified, so the rule applies to all inbound HTTP traffic through the IP address is specified. If a host is provided (for example, foo.bar.com), the rules apply to that host.
+  - a list of **paths** (for example, /testpath), each of which has an associated backend defined with a serviceName and servicePort. Both the host and path must match the content of an incoming request before the loadbalancer will direct traffic to the referenced service.
+  - A **backend** is a combination of service and port names as described in the services doc. HTTP (and HTTPS) requests to the ingress matching the host and path of the rule will be sent to the listed backend.
+
+A **default backend** is often configured in an ingress controller that will service any requests that do not match a path in the spec.
+
+
+
+
+
+Another example set of rules
 ```
 apiVersion: extensions/v1beta1
 kind: Ingress
