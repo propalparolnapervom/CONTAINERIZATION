@@ -482,6 +482,11 @@ A good example of that would be to distribute load across different web servers
 
 [Hands-on steps](https://www.katacoda.com/courses/kubernetes/create-kubernetes-ingress-routes)
 
+[2Read #1](https://medium.com/@cashisclay/kubernetes-ingress-82aa960f658e)
+
+[2Read #2](https://medium.com/google-cloud/understanding-kubernetes-networking-ingress-1bc341c84078)
+
+
 **Ingress** - API object that manages external access to the services in a cluster, typically HTTP. 
 
 Traffic routing is controlled by rules defined on the ingress resource.
