@@ -1,4 +1,4 @@
-# KUBERADM OVERALL
+# KUBEADM OVERALL
 
 [Official Kubeadm docs](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm/)
 
