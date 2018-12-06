@@ -1,0 +1,42 @@
+
+#Deployment for Ingress Controller has to be already existing
+
+# Type of Service: NodePort
+kind: Service
+apiVersion: v1
+metadata:
+  name: xbs-nginx-service
+  namespace: ingress-nginx  #namespace for already existing Deployment for Ingress Controller
+spec:
+  type: NodePort
+  externalIPs:
+    - 192.168.99.100  #this is IP of minikube node
+  selector:
+    name: xbs-nginx-service
+    namespace: ingress-nginx  #namespace for already existing Deployment for Ingress Controller
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 80  #Port for "ingress-controller" Deployment
+---
+#Ingress resource (defines how you want requests routed to the backing services)
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: xbs-few-svc
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: todel.com
+    http:
+      paths:
+      - path: /one
+        backend:
+          serviceName: xbs-svc-1
+          servicePort: 8080
+      - path: /two
+        backend:
+          serviceName: xbs-svc-2
+          servicePort: 8080

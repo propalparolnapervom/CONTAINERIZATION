@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xbs-dpmnt
+  labels:
+    app: xbs-app-dpmnt
+    type: front-end-dpmnt
+spec:
+  template:
+    metadata:
+      name: xbs-pod
+      labels:
+        app: xbs-app-pod
+        type: front-end-dpmnt
+    spec:
+      containers:
+      - name: xbs-container
+        image: ppnp/image1
+  replicas: 3
+  selector:
+    matchLabels:
+      type: front-end-dpmnt
+---
+# Type of Service: NodePort
+kind: Service
+apiVersion: v1
+metadata:
+  name: xbs-nginx-service
+spec:
+  type: NodePort
+  externalIPs:
+    - 192.168.99.100  #this is IP of minikube node
+  selector:
+    type: front-end-dpmnt
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: xbs-single-svc-ingress
+spec:
+  backend:
+    serviceName: xbs-nginx-service
+    servicePort: 8080
