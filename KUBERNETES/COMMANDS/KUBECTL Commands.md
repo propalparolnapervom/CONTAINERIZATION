@@ -434,8 +434,25 @@ kubectl get configmaps --namespace kube-system weave-net -o yaml
 
 
 
+# SERCRETS
 
+Decode specific secret `AUDITING_DOMAIN`
+```
+kubectl get secrets envsecrets -o json | jq -r '.data.AUDITING_DOMAIN' | base64 -D
+```
 
+Another way to decode:
+```
+kubectl get secrets envsecrets -o yaml
+
+      #lookup for the key: AUDITING_DOMAIN
+      
+      #copy the value and:
+      
+      #decrypt it
+
+echo "<value>" | base64 -D
+```
 
 
 
