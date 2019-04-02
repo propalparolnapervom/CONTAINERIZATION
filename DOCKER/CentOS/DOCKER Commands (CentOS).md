@@ -403,6 +403,10 @@ docker run --env-file=env.env hello-world
 **Copy file from container to host**
 ```
 docker cp <containerId>:/file/path/within/container /host/path/target
+
+   OR
+   
+docker cp <container_tag_name>:/file/path/within/container /host/path/target
 ```
 
 
