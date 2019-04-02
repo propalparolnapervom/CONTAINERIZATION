@@ -398,9 +398,9 @@ Use it during Docker container creating:
 docker run --env-file=env.env hello-world
 ```
 
-## COPY FILES FROM CONTAINER TO HOST
+## COPY FILE/FOLDER FROM CONTAINER TO HOST
 
-**Copy file from container to host**
+**Copy file/folder from container to host**
 ```
 docker cp <containerId>:/file/path/within/container /host/path/target
 
