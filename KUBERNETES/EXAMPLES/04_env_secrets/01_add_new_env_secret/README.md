@@ -22,14 +22,17 @@ Add following new Kubernetes env secrets (with some values):
 
 ### Add new env secrets to Env secret file
 
-```cp bu/env_secrets_prod.${CURR_D}.yaml new/env_secrets_prod.${CURR_D}.yaml```
-```vi new/env_secrets_prod.${CURR_D}.yaml```
+```
+cp bu/env_secrets_prod.${CURR_D}.yaml new/env_secrets_prod.${CURR_D}.yaml
+vi new/env_secrets_prod.${CURR_D}.yaml
+```
 
 ### Verify expected difference for the new file
 
-```diff bu/env_secrets_prod.${CURR_D}.yaml new/env_secrets_prod.${CURR_D}.yaml```
-
-```cat new/env_secrets_prod.${CURR_D}.yaml```
+```
+diff bu/env_secrets_prod.${CURR_D}.yaml new/env_secrets_prod.${CURR_D}.yaml
+cat new/env_secrets_prod.${CURR_D}.yaml
+```
 
 ## Apply file with new env secrets
 
@@ -47,5 +50,7 @@ Add following new Kubernetes env secrets (with some values):
 
 ## Verify decoding works
 
-```kubectl get secrets envsecrets -o json | jq -r '.data.CREWING_EXT_DATA_GW_AUTH0_M2M_CLIENT_ID' | base64 -D```
-```kubectl get secrets envsecrets -o json | jq -r '.data.CREWING_EXT_DATA_GW_AUTH0_M2M_CLIENT_SECRET' | base64 -D```
+```
+kubectl get secrets envsecrets -o json | jq -r '.data.CREWING_EXT_DATA_GW_AUTH0_M2M_CLIENT_ID' | base64 -D
+kubectl get secrets envsecrets -o json | jq -r '.data.CREWING_EXT_DATA_GW_AUTH0_M2M_CLIENT_SECRET' | base64 -D
+```
