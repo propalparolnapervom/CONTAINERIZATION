@@ -2,6 +2,7 @@
 # WHAT
 
 Add following new Kubernetes env secrets (with some values):
+
     - CREWING_EXT_DATA_GW_AUTH0_M2M_CLIENT_ID
     - CREWING_EXT_DATA_GW_AUTH0_M2M_CLIENT_SECRET
 
