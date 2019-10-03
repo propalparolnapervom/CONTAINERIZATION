@@ -189,6 +189,17 @@ kubectl exec -ti vessel-responsibilities-7bdff94968-xt7lw vessel-responsibilitie
 ```
 
 
+## CREATE NEW POD
+
+Fast way to add POD
+```
+      # --restart=Never - creates POD
+      # --restart=Always - creates DEPLOYMENT
+      # --restart=OnFailure - creates JOB
+      
+kubectl run  -it --restart=Never --image=ubuntu bash
+```
+
 # RCs
 
 ## LIST RCs
