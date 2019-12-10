@@ -445,7 +445,7 @@ kubectl get configmaps --namespace kube-system weave-net -o yaml
 
 
 
-# SERCRETS
+# SECRETS
 
 Decode specific secret `AUDITING_DOMAIN`
 ```
@@ -465,6 +465,17 @@ kubectl get secrets envsecrets -o yaml
 echo "<value>" | base64 -D
 ```
 
+# PORTS
+
+Port forward specific pod
+```
+kubectl port-forward <pod_name> 8080:8080
+```
+
+Port forward pod by its template name
+```
+kubectl port-forward -n oos $(kubectl get pods -n oos| grep port-information-domain | awk '{print $1}') 8080:8080
+```
 
 
 
