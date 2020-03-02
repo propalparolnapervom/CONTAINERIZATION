@@ -477,7 +477,27 @@ Port forward pod by its template name
 kubectl port-forward -n oos $(kubectl get pods -n oos| grep port-information-domain | awk '{print $1}') 8080:8080
 ```
 
+# ROLE
 
+Find all `roles` handled by Kubernetes
+```
+kubectl get clusterrole -n kube-system
+```
+
+See what exact permissions are defined by the role (`view` role in the example)
+```
+kubectl describe clusterrole -n kube-system view
+```
+
+Find all `role` bindings to `group`
+```
+kubectl get clusterrolebinding -n kube-system
+```
+
+See what `group` is bound to `role` (`view` role in the example)
+```
+kubectl describe clusterrolebinding -n kube-system view
+```
 
 
 
