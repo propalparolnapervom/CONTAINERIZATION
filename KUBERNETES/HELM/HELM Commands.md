@@ -73,9 +73,46 @@ helm delete xbs-chart
 helm delete --purge xbs-chart
 ```
 
+# REPOSITORY
+
+## List
+
+List all of already added chart repositories
+```
+helm repo list
+```
 
 
+## Add
 
+Add new Helm repo
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+```
+
+## Update
+
+Update all repos 
+```
+helm repo update
+```
+
+## Search
+
+Search for stable release versions matching the keyword "nginx"
+```
+helm search repo nginx
+```
+
+Search for release versions matching the keyword "nginx", including pre-release versions
+```
+helm search repo nginx --devel
+```
+
+Search for the latest stable release for nginx-ingress with a major version of 1
+```
+helm search repo nginx-ingress --version ^1.0.0
+```
 
 
 
