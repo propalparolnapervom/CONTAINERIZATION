@@ -22,6 +22,31 @@ kubectl describe pod xbs-dpmnt-5dc84f869d-jzjsm
 ```
 
 
+# KUBENCOFIG
+
+## Create
+Create KUBECONFIG for AWS EKS automatically (dry-run)
+```
+aws eks update-kubeconfig --name <EKS_CLUSTER_NEW> --region <EKS_AWS_REGION> --role-arn <AWS_IAM_ROLE_TO_AUTH_WITH> --dry-run
+```
+
+## Work with context
+
+Show current context
+```
+kubectl config get-context
+```
+
+Use specific context (if multiply ones defined in the KUBECONFIG file)
+```
+kubectl config use-context "dpdev"
+```
+Show the configuration itself for current context
+```
+kubectl config view
+```
+
+
 
 # NODEs
 
