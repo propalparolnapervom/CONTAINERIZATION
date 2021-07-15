@@ -34,7 +34,7 @@ aws eks update-kubeconfig --name <EKS_CLUSTER_NEW> --region <EKS_AWS_REGION> --r
 
 Show current context
 ```
-kubectl config get-context
+kubectl config get-contexts
 ```
 
 Use specific context (if multiply ones defined in the KUBECONFIG file)
