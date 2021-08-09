@@ -58,6 +58,26 @@ kubectl get nodes
       minikube   Ready     master    1h        v1.10.0
 ```
 
+Drain node in preparation for maintenance
+
+> The given node will be marked unschedulable to prevent new pods from arriving.
+
+```
+# Dry-run
+kubectl drain --dry-run=true <my-node>
+
+# Evict or Delete all Pods on the node, except DaemonSet
+kubectl drain <my-node>
+
+# Evict or Delete all Pods on the node, except DaemonSet
+# timeout: The length of time to wait before giving up, zero means infinite
+kubectl drain --timeout=0s <my-node>
+
+# Evict or Delete all Pods on the node, including DaemonSet
+kubectl drain --ignore-daemonsets=true <my-node>
+
+```
+
 
 
 # PODs
