@@ -114,6 +114,10 @@ Search for the latest stable release for nginx-ingress with a major version of 1
 helm search repo nginx-ingress --version ^1.0.0
 ```
 
+Search all available versions of the chart in the repo
+```
+helm search repo kube2iam --versions   
+```
 
 
 
