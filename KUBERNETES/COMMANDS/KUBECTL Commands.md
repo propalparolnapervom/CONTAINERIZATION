@@ -82,7 +82,7 @@ kubectl drain --ignore-daemonsets=true <my-node>
 
 # PODs
 
-## LIST PODs
+## List
 
 List all pods in ps output format
 ```
@@ -113,8 +113,7 @@ List just POD names
 kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}'
 ```
 
-
-## DESCRIBE PODs
+## Describe
 
 Describe all PODs
 ```
@@ -127,17 +126,29 @@ kubectl describe pods nginx-pod-name-58b8b74459-nzc57
 ```
 
 
-
-
-
-## DEPLOY PODs
+## Deploy
 
 ### Command Line
 
 Deploy a POD `nginx-pod-name` from `nginx` already existing Docker image (from Docker Hub)
 ```
+# Imperative way
+
+# Actual creating
 kubectl run nginx-pod-name --image=nginx
+
+# Dry-run
+k run nginx-pod-name --image=nginx --dry-run=client -o yaml
 ```
+
+Create a new pod called `custom-nginx` using the `nginx` image and expose it on container port `8080`
+```
+# Imperative way
+
+# Actual creating
+kubectl run custom-nginx --image=nginx --port=8080
+```
+
 
 ### Config File
 
@@ -163,7 +174,7 @@ kubectl create -f pod-creation.yml
 
 
 
-## DESTROY PODs
+## Destroy
 
 Destroy all PODs
 ```
@@ -180,16 +191,16 @@ Destroy specific POD (by POD label)
 kubectl delete pods -l app=random-name-app
 ```
 
-## GET PORT OF POD
 
+## Port
+
+Get pod's port
 ```
-
 kubectl describe pods email-autodiscover | grep -i port
       
       Port:           80/TCP
       
-      
-      
+    
       #OR
       
       
@@ -199,7 +210,7 @@ kubectl get pods email-autodiscover --template=‘{{(index (index .spec.containe
 ```
 
 
-## POD LOGs
+## Logs
 
 Anything that the application would normally send to `STDOUT` becomes logs for the container within the Pod. 
 
@@ -217,7 +228,7 @@ kubectl logs vessel-responsibilities-7bdff94968-xt7lw
 kubectl logs vessel-responsibilities-7bdff94968-xt7lw vessel-responsibilities
 ```
 
-## EXEC
+## Connect to the Pod
 
 Go inside POD's Container
 ```
@@ -234,7 +245,7 @@ kubectl exec -ti vessel-responsibilities-7bdff94968-xt7lw vessel-responsibilitie
 ```
 
 
-## CREATE NEW POD
+## Create and connect to a new Pod
 
 Fast way to add POD
 ```
@@ -244,6 +255,10 @@ Fast way to add POD
       
 kubectl run  -it --restart=Never --image=ubuntu bash
 ```
+
+
+
+
 
 # RCs
 
@@ -333,20 +348,21 @@ kubectl delete rs xbs-rs
 # DEPLOYMENTs
 
 
-## CREATE DEPLOYMENTs
+## Create
 
-Create deployment (explicitly)
+Create a deployment named `webapp` using the image `kodekloud/webapp-color` with `3` replicas.
 ```
-kubectl create -f deploy-definition.yml
+# Imperative
+
+# Actual creation
+kubectl create deployment webapp --image=kodekloud/webapp-color --replicas=3
+
+# Dry run
+kubectl create deployment webapp --image=kodekloud/webapp-color --replicas=3 --dry-run=client -o yaml
 ```
 
-Create deployment (inplicitily)
-```
-kubectl run nginx --image=nginx
-```
 
-
-## LIST DEPLOYMENTs
+## List
 
 List all Deployments
 ```
@@ -364,7 +380,7 @@ kubectl get deploy xbs-dpmnt
 kubectl get deployment xbs-dpmnt
 ```
 
-## UPDATE DEPLOYMENTs (SCALE, for instance)
+## Update (scale)
 
 ### Via Config File updating
 
@@ -389,7 +405,7 @@ kubectl scale --replicas=6 -f dpmnt-creation.yml
 
 
 
-## APPLY DEPLOYMENTs
+## Apply
 
 Apply a configuration to a resource by filename or stdin. 
 
@@ -401,7 +417,7 @@ kubectl apply -f xbs-chart/templates/d.yaml
 ```
 
 
-## UNDO DEPLOYMENTs
+## Undo
 
 ```
 kubectl rollout undo deploy/xbs-helm-dpmnt2
@@ -413,7 +429,7 @@ kubectl rollout history deploy/xbs-helm-dpmnt2
 ```
 
 
-## DELETE DEPLOYMENTs
+## Delete
 
 Delete specific Deployment (PODs inside DEPLOYMENT will be destroyed as well)
 ```
@@ -425,7 +441,7 @@ kubectl delete deployments xbs-dmpnt
 
 # SERVICEs
 
-## VIEW  SERVICEs
+## List
 
 List services
 ```
@@ -437,9 +453,21 @@ Describe
 kubectl describe services/webapp1-clusterip-svc
 ```
 
+## Create
+
+Create a service `redis-service` to expose the `redis` application within the cluster on port `6379`.
+```
+# Imperative command
+
+# Actual creation 
+kubectl expose pod redis --port=6379 --name redis-service
+
+# Dry run
+kubectl expose pod redis --port=6379 --name redis-service --dry-run=client -o yaml
+```
 
 
-## VIEW IP
+## View IP
 
 Get only IP of specific service
 ```
@@ -488,7 +516,16 @@ View specific Configmap from specific namespace in `yaml`-based format
 kubectl get configmaps --namespace kube-system weave-net -o yaml
 ```
 
+# NAMESPACE
 
+## Create
+
+Create a new namespace called `dev-ns`.
+```
+# Imperative
+
+kubectl create namespace dev-ns
+```
 
 # SECRETS
 
