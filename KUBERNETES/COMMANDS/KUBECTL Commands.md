@@ -48,7 +48,7 @@ kubectl config view
 
 
 
-# PODs
+# POD
 
 ## List
 
@@ -239,7 +239,7 @@ kubectl run  -it --restart=Never --image=ubuntu bash
 
 
 
-# NODEs
+# NODE
 
 List all nodes
 ```
@@ -251,7 +251,7 @@ kubectl get nodes
 
 Drain node in preparation for maintenance
 
-> The given node will be marked unschedulable to prevent new pods from arriving.
+> NOTE: The given node will be marked unschedulable to prevent new pods from arriving.
 
 ```
 # Dry-run
@@ -591,6 +591,71 @@ See what `group` is bound to `role` (`view` role in the example)
 ```
 kubectl describe clusterrolebinding -n kube-system view
 ```
+
+
+# TAINT AND TOLERATIONS
+
+> **NOTE**: "Don't place any random Pod on the Node - just specified ones. And only if they want to".
+
+## Overall
+
+`Taint` might be placed on `Node`. `Toleration` might be placed on `Pod`.
+
+If `Node` has specific `Taint`, only `Pods` with corresponding `Toleration` could be placed on the Node.
+
+> **NOTE**: It doesn't guarantee that Pod will be placed on that Node, tho.
+> If `Pod` has specific `Toleration`, it can be placed on any Node, including the one with corresponding `Taint`.
+> Thus, it's only garantees that no `Pod` without `Toleration` will be placed on the `Node` with `Taint`.
+
+
+## Add
+
+Create a taint on `node01` with key of `spray`, value of `mortein` and effect of `NoSchedule`
+```
+# <TAINT_EFFECT> defines what happens to the Pod, if it doesn't tolerate the Taint of this Node
+# kubectl taint nodes <NODE-NAME> <TAINT_KEY>=<TAINT_VALUE>:<TAINT_EFFECT>
+
+kubectl taint nodes node01 spray=mortein:NoSchedule
+```
+
+Create a Pod with a tolleration:
+```
+# The definition of Pod must have following block then
+...
+spec:
+  containers:
+  - image: nginx
+    name: bee
+  tolerations:
+  - effect: NoSchedule
+    key: "spray"
+    operator: "Equal"
+    value: "mortein"
+...
+```
+
+## Remove
+
+Remove from node `foo` the taint with key `dedicated` and effect `NoSchedule` if one exists
+```
+kubectl taint nodes foo dedicated:NoSchedule-
+```
+
+Remove the taint on node `controlplane`, which currently has the taint effect of `NoSchedule`.
+```
+kubectl taint nodes controlplane :NoSchedule-
+```
+
+
+
+
+# NODE AFFINITY
+
+> **NOTE**: "Place this Pods to only this Node".
+
+
+
+
 
 
 
