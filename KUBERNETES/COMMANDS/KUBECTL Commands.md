@@ -48,38 +48,6 @@ kubectl config view
 
 
 
-# NODEs
-
-List all nodes
-```
-kubectl get nodes
-
-      NAME       STATUS    ROLES     AGE       VERSION
-      minikube   Ready     master    1h        v1.10.0
-```
-
-Drain node in preparation for maintenance
-
-> The given node will be marked unschedulable to prevent new pods from arriving.
-
-```
-# Dry-run
-kubectl drain --dry-run=true <my-node>
-
-# Evict or Delete all Pods on the node, except DaemonSet
-kubectl drain <my-node>
-
-# Evict or Delete all Pods on the node, except DaemonSet
-# timeout: The length of time to wait before giving up, zero means infinite
-kubectl drain --timeout=0s <my-node>
-
-# Evict or Delete all Pods on the node, including DaemonSet
-kubectl drain --ignore-daemonsets=true <my-node>
-
-```
-
-
-
 # PODs
 
 ## List
@@ -101,11 +69,17 @@ kubectl get pods -o=wide
 List PODs with specific label
 ```
 kubectl get pods -l app=random-name-app
+
+   # OR
+
+kubectl get pods --selector app=random-name-app
 ```
 
-List a specific POD in JSON output format
+List a specific POD in JSON/YAML output format
 ```
-kubectl get -o json pod nginx-65899c769f-v8r2p
+kubectl get pod nginx-65899c769f-v8r2p -o json
+
+kubectl get pod nginx-65899c769f-v8r2p -o yaml
 ```
 
 List just POD names
@@ -257,6 +231,38 @@ kubectl run  -it --restart=Never --image=ubuntu bash
 ```
 
 
+
+
+
+# NODEs
+
+List all nodes
+```
+kubectl get nodes
+
+      NAME       STATUS    ROLES     AGE       VERSION
+      minikube   Ready     master    1h        v1.10.0
+```
+
+Drain node in preparation for maintenance
+
+> The given node will be marked unschedulable to prevent new pods from arriving.
+
+```
+# Dry-run
+kubectl drain --dry-run=true <my-node>
+
+# Evict or Delete all Pods on the node, except DaemonSet
+kubectl drain <my-node>
+
+# Evict or Delete all Pods on the node, except DaemonSet
+# timeout: The length of time to wait before giving up, zero means infinite
+kubectl drain --timeout=0s <my-node>
+
+# Evict or Delete all Pods on the node, including DaemonSet
+kubectl drain --ignore-daemonsets=true <my-node>
+
+```
 
 
 
