@@ -73,6 +73,11 @@ kubectl get pods -l app=random-name-app
    # OR
 
 kubectl get pods --selector app=random-name-app
+
+   # OR
+   
+# If Pod should containe multiple labels 
+k get pods -l env=prod,bu=finance,tier=frontend
 ```
 
 List a specific POD in JSON/YAML output format
