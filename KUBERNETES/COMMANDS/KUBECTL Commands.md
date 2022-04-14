@@ -241,6 +241,8 @@ kubectl run  -it --restart=Never --image=ubuntu bash
 
 # NODE
 
+## List
+
 List all nodes
 ```
 kubectl get nodes
@@ -269,6 +271,12 @@ kubectl drain --ignore-daemonsets=true <my-node>
 
 ```
 
+## Label
+
+Add label to the Node
+```
+kubectl label nodes <NODE_NAME> <LABEL_KEY>=<LABEL_VALUE>
+```
 
 
 # RCs
@@ -653,6 +661,9 @@ kubectl taint nodes controlplane :NoSchedule-
 
 > **NOTE**: "Place this Pods to only this Node".
 
+> **NOTE**: `Node Selector`, which uses Labels on the Nodes, can do +/- the same.
+> But it only can place the Pod to the Node. It can't use `OR` or `NOT` conditions during selecting of the Nodes.
+> So not "the Pod on this Node or that Node", not "the Pod not on this Node".
 
 
 
