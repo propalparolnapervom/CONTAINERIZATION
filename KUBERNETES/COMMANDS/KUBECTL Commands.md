@@ -435,17 +435,31 @@ To use `apply`, always create the resource initially with either `apply` or `cre
 kubectl apply -f xbs-chart/templates/d.yaml
 ```
 
+## Rollout
 
-## Undo
+> **NOTE**: Rollout - deploying latest changes to the Deployment.
 
+### List
+
+Check the status of rollout
+```
+kubectl rollout status deployment/<DEPLOYMENT_NAME>
+```
+
+See a history of rollouts (revisions).
+```
+kubectl rollout history deploy/xbs-helm-dpmnt2
+```
+
+
+### Undo
+
+Rollback to previous revision
 ```
 kubectl rollout undo deploy/xbs-helm-dpmnt2
 ```
 
-See a history of rollout.
-```
-kubectl rollout history deploy/xbs-helm-dpmnt2
-```
+
 
 
 ## Delete
@@ -456,6 +470,12 @@ kubectl delete deploy xbs-dmpnt
 
 kubectl delete deployments xbs-dmpnt
 ```
+
+
+
+
+
+
 
 
 # SERVICEs
@@ -548,6 +568,15 @@ kubectl create namespace dev-ns
 
 # SECRETS
 
+## Create 
+
+```
+# Imperative
+kubectl create secret generic db-secret --from-literal=DB_Host=sql01 --from-literal=DB_User=root --from-literal=DB_Password=password123
+```
+
+## Decode
+
 Decode specific secret `AUDITING_DOMAIN`
 ```
 kubectl get secrets envsecrets -o json | jq -r '.data.AUDITING_DOMAIN' | base64 -D
@@ -563,7 +592,8 @@ kubectl get secrets envsecrets -o yaml
       
       #decrypt it
 
-echo "<value>" | base64 -D
+# Do not use `echo` as it's not always give the correct answer
+printf "<value>" | base64 -D
 ```
 
 # PORTS
