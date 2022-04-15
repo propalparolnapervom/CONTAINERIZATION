@@ -251,9 +251,13 @@ kubectl get nodes
       minikube   Ready     master    1h        v1.10.0
 ```
 
-Drain node in preparation for maintenance
+## Remove Pods from Node, mark the node as Unschedulable
 
-> NOTE: The given node will be marked unschedulable to prevent new pods from arriving.
+Drain node (in preparation for maintenance, for example)
+
+> **NOTE**: This is to:
+> - mark the Node unschedulable to prevent new pods from arriving;
+> - remove all present Pods from the Node.
 
 ```
 # Dry-run
@@ -268,8 +272,30 @@ kubectl drain --timeout=0s <my-node>
 
 # Evict or Delete all Pods on the node, including DaemonSet
 kubectl drain --ignore-daemonsets=true <my-node>
+```
+
+## Mark the node as Unschedulable
+
+No existing Pods will be deleted from the Node.
+
+> **NOTE**: Unlike `drain`, this is only to mark the Node unschedulable to prevent new pods from arriving;
+```
+kubectl cordon <NODE-NAIM>
+```
+
+
+## Remove Unschedulable mark from the Node
+
+Let the Node to have Pods
+> **NOTE**: This is opposite to `drain` and `cordon`, to remove `unschedulable` mark from the Node
 
 ```
+kubectl uncordon <NODE-NAME>
+```
+
+> NOTE: The Pods, that were removed after `drain`, don't automatically come back once the Node is back.
+> The Node will be populated with Pods next time a new Pods will be created for some reason.
+
 
 ## Label
 
