@@ -279,7 +279,7 @@ kubectl drain --ignore-daemonsets=true <my-node>
 # (so, manually, for example)
 #
 # NOTE: K8S can't create such Pods after node comes back!
-kubectl drain <my-node>
+kubectl drain --force <my-node>
 ```
 
 ## Mark the node as Unschedulable
