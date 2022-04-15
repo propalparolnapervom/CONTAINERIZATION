@@ -259,6 +259,7 @@ Drain node (in preparation for maintenance, for example)
 > - mark the Node unschedulable to prevent new pods from arriving;
 > - remove all present Pods from the Node.
 
+> **NOTE**: It cannot delete Pods not managed by `ReplicationController`, `ReplicaSet`, `Job`, `DaemonSet` or `StatefulSet` (use --force to override)
 ```
 # Dry-run
 kubectl drain --dry-run=true <my-node>
@@ -272,6 +273,13 @@ kubectl drain --timeout=0s <my-node>
 
 # Evict or Delete all Pods on the node, including DaemonSet
 kubectl drain --ignore-daemonsets=true <my-node>
+
+# Evict or Delete all Pods on the node, 
+# including the ones, that were not created by `ReplicationController`, `ReplicaSet`, `Job`, `DaemonSet` or `StatefulSet`
+# (so, manually, for example)
+#
+# NOTE: K8S can't create such Pods after node comes back!
+kubectl drain <my-node>
 ```
 
 ## Mark the node as Unschedulable
