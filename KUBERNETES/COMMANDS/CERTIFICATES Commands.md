@@ -28,7 +28,7 @@ Thus, we need both **`*.crt` certificate** and corresponding **`*.key` private k
 - Client Certificates:
    - `admin` (the one that Admin will use via `kubectl`, for ex);
    - `scheduler`;
-   - `controll-manager`;
+   - `controller-manager`;
    - `kube-proxy`;
    - `apiserver-kubelet-client` (when Api-server acts as a Client for the Kubelet);
    - `apiserver-etcd-client` (when Api-server acts as a Client for the Etcd);
@@ -138,6 +138,37 @@ openssl x509 -req -in scheduler.csr -CA ca.crt -CAkey ca.key -out scheduler.crt
 ```
 
 
+
+### Controller-Manager
+
+The following will be generated eventually:
+- `controller-manager.key` - the `private key`;
+- `controller-manager.crt` - the `certificate`.
+
+> **NOTE**: The `certificate` must contain information, that this Client requires admin privileges.
+
+
+Generate new `private key` 
+```
+openssl genrsa -out controller-manager.key 2048
+```
+
+Generate new `CSR` (Certificate Signing Request), based on the `private key` from above
+
+> **NOTE**: This is a system component, part of the Controlplane. Thus, it's name must start with `system:` prefix.
+
+> **NOTE**: K8S has "system:masters" group with admin priviliges.
+> 
+>  To distinct admin user from non-admin user, it should be added to that group by adding "/O=system:masters" within a certificate
+```
+openssl req -new -key controller-manager.key -subj "/CN=system:kube-controller-manager/O=system:masters" -out controller-manager.csr
+```
+
+Generate a new `certificate`, by signing the `CSR` with CA key pair
+> **NOTE**: This time the `certificate` is signed by CA, not self-signed
+```
+openssl x509 -req -in controller-manager.csr -CA ca.crt -CAkey ca.key -out controller-manager.crt
+```
 
 
 
