@@ -39,9 +39,11 @@ Thus, we need both **`*.crt` certificate** and corresponding **`*.key` private k
 
 ## Generate 
 
-To generate `ca` certificates, it will be signed by itself (as we don't use other Certificate Authority in this example).
+CA certificate will be self-signed (as we don't use other Certificate Authority in this example).
 
-To generate all other certificates, it will be signed by `ca.key` (as that's the main purpose of CA - to sign other certificates).
+All other certificates will be signed by CA certificate.
+
+K8S doesn't have users, but cert/private-key pair is something like user/password pair - just more secure.
 
 
 ### Certificate Authority (CA)
@@ -79,17 +81,23 @@ The following will be generated eventually:
 - `admin.key` - the `private key`;
 - `admin.crt` - the `certificate`.
 
+> **NOTE**: The `certificate` must contain information, that this Client requires admin privileges.
+
 Generate new `private key` 
 ```
 openssl genrsa -out admin.key 2048
 ```
 
 Generate new `CSR` (Certificate Signing Request), based on the `private key` from above
-> **NOTE**: The value for `/CN` could be any random one - "kube-admin" is here.
-> But this name is used by `kubectl` to authenticate. 
-> Thus, this is the name you will see for `kubectl` in audit logs, for example
+
+> **NOTE**: Whatever random value for `/CN` is chosen, `kubectl` will use it for authentication. 
+> So corresponding name will be used to log its activity within audit logs, for example.
+
+> **NOTE**: K8S has "system:masters" group with admin priviliges.
+> 
+>  To distinct admin user from non-admin user, it should be added to that group by adding "/O=system:masters" within a certificate
 ```
-openssl req -new -key admin.key -subj "/CN=kube-admin" -out admin.csr
+openssl req -new -key admin.key -subj "/CN=kube-admin/O=system:masters" -out admin.csr
 ```
 
 Generate a new `certificate`, by signing the `CSR` with CA key pair
@@ -98,7 +106,36 @@ Generate a new `certificate`, by signing the `CSR` with CA key pair
 openssl x509 -req -in admin.csr -CA ca.crt -CAkey ca.key -out admin.crt
 ```
 
+### Kube-Scheduler
 
+The following will be generated eventually:
+- `scheduler.key` - the `private key`;
+- `scheduler.crt` - the `certificate`.
+
+> **NOTE**: The `certificate` must contain information, that this Client requires admin privileges.
+
+
+Generate new `private key` 
+```
+openssl genrsa -out scheduler.key 2048
+```
+
+Generate new `CSR` (Certificate Signing Request), based on the `private key` from above
+
+> **NOTE**: This is a system component, part of the Controlplane. Thus, it's name must start with `system:` prefix.
+
+> **NOTE**: K8S has "system:masters" group with admin priviliges.
+> 
+>  To distinct admin user from non-admin user, it should be added to that group by adding "/O=system:masters" within a certificate
+```
+openssl req -new -key scheduler.key -subj "/CN=system:kube-scheduler/O=system:masters" -out scheduler.csr
+```
+
+Generate a new `certificate`, by signing the `CSR` with CA key pair
+> **NOTE**: This time the `certificate` is signed by CA, not self-signed
+```
+openssl x509 -req -in scheduler.csr -CA ca.crt -CAkey ca.key -out scheduler.crt
+```
 
 
 
