@@ -61,6 +61,10 @@ etcdctl set key1 value1
 
 # Backup & Restore
 
+[Docs #1](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#backing-up-an-etcd-cluster)
+
+[Docs #2](https://github.com/etcd-io/website/blob/main/content/en/docs/v3.5/op-guide/recovery.md)
+
 This is example for the case, when K8S is installed with help of `kubeadm` tool. 
 
 Thus, controlplane components (including `etcd`) are installed as Pods via manifest file.
