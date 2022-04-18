@@ -132,6 +132,22 @@ When this file is updated, the ETCD pod is automatically re-created as this is a
 You can't work with it, until it will be up and running (including `kubectl` requests to API).
 
 
+> **Note 1**: As the ETCD pod has changed it will automatically restart, and also kube-controller-manager and kube-scheduler. 
+> Wait 1-2 to mins for this pods to restart. 
+> You can run a `watch "docker ps | grep etcd"` command to see when the ETCD pod is restarted.
+
+> **Note 2**: If the `etcd` pod is not getting `Ready 1/1`, then restart it by `kubectl delete pod -n kube-system etcd-controlplane` and wait 1 minute.
+
+> **Note 3**: This is the simplest way to make sure that ETCD uses the restored data after the ETCD pod is recreated. 
+> You don't have to change anything else.
+
+
+
+
+
+
+
+
 
 
 
