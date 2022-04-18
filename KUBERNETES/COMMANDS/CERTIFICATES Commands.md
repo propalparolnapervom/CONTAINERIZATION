@@ -39,7 +39,18 @@ Thus, we need both **`*.crt` certificate** and corresponding **`*.key` private k
 
 ## Generate 
 
-### `ca.crt`/`ca.key`
+To generate `ca` certificates, it will be signed by itself (as we don't use other Certificate Authority in this example).
+
+To generate all other certificates, it will be signed by `ca.key` (as that's the main purpose of CA - to sign other certificates).
+
+
+### Certificate Authority (CA)
+
+The following will be generated eventually:
+- `ca.key` - the `private key`;
+- `ca.crt` - the `certificate`;
+- `ca.srl` - manually created file with some random sequence number, that CA will use to sign other certificates (if needed)
+
 
 Generate new `private key` 
 ```
@@ -56,8 +67,36 @@ Generate a self-signed `certificate`, by signing by ourselves the `CSR` with cor
 openssl x509 -req -in ca.csr -signkey ca.key -out ca.crt
 ```
 
+> **NOTE**: If `ca.key`/`ca.crt` key pair is gonna be used to sign other certificates, create manually `ca.srl` with some number.
+> The sequence number from the file is gonna be used to generate a unique serial number for each signed certificate.
+> For example:
+> `echo 02 > ca.srl`
 
 
+### Admin User
+
+The following will be generated eventually:
+- `admin.key` - the `private key`;
+- `admin.crt` - the `certificate`.
+
+Generate new `private key` 
+```
+openssl genrsa -out admin.key 2048
+```
+
+Generate new `CSR` (Certificate Signing Request), based on the `private key` from above
+> **NOTE**: The value for `/CN` could be any random one - "kube-admin" is here.
+> But this name is used by `kubectl` to authenticate. 
+> Thus, this is the name you will see for `kubectl` in audit logs, for example
+```
+openssl req -new -key admin.key -subj "/CN=kube-admin" -out admin.csr
+```
+
+Generate a new `certificate`, by signing the `CSR` with CA key pair
+> **NOTE**: This time the `certificate` is signed by CA, not self-signed
+```
+openssl x509 -req -in admin.csr -CA ca.crt -CAkey ca.key -out admin.crt
+```
 
 
 
