@@ -32,7 +32,7 @@ Thus, we need both **`*.crt` certificate** and corresponding **`*.key` private k
    - `kube-proxy`;
    - `apiserver-kubelet-client` (when Api-server acts as a Client for the Kubelet);
    - `apiserver-etcd-client` (when Api-server acts as a Client for the Etcd);
-   - `kubelet-client` (when Kubelet acts as a Client for the Etcd);
+   - `kubelet-apiserver-client` (when Kubelet acts as a Client for the Api-server);
 - CA Certificates:
    - `ca`.
 
@@ -172,9 +172,147 @@ openssl x509 -req -in controller-manager.csr -CA ca.crt -CAkey ca.key -out contr
 
 
 
+### Kube-Proxy
+
+The following will be generated eventually:
+- `kube-proxy.key` - the `private key`;
+- `kube-proxy.crt` - the `certificate`.
+
+> **NOTE**: The `certificate` must contain information, that this Client requires admin privileges.
+
+
+Generate new `private key` 
+```
+openssl genrsa -out kube-proxy.key 2048
+```
+
+Generate new `CSR` (Certificate Signing Request), based on the `private key` from above
+
+> **NOTE**: K8S has "system:masters" group with admin priviliges.
+> 
+>  To distinct admin user from non-admin user, it should be added to that group by adding "/O=system:masters" within a certificate
+```
+openssl req -new -key kube-proxy.key -subj "/CN=kube-proxy/O=system:masters" -out kube-proxy.csr
+```
+
+Generate a new `certificate`, by signing the `CSR` with CA key pair
+> **NOTE**: This time the `certificate` is signed by CA, not self-signed
+```
+openssl x509 -req -in kube-proxy.csr -CA ca.crt -CAkey ca.key -out kube-proxy.crt
+```
+
+
+### Apiserver-Kubelet-Client
+
+> **NOTE**: When `api-server` acts as a Client for the `kubelet`.
+
+The following will be generated eventually:
+- `apiserver-kubelet-client.key` - the `private key`;
+- `apiserver-kubelet-client.crt` - the `certificate`.
+
+> **NOTE**: The `certificate` must contain information, that this Client requires admin privileges.
+
+Generate new `private key` 
+```
+openssl genrsa -out apiserver-kubelet-client.key 2048
+```
+
+Generate new `CSR` (Certificate Signing Request), based on the `private key` from above
+
+> **NOTE**: This is a system component, part of the Controlplane. Thus, it's name must start with `system:` prefix.
+
+> **NOTE**: K8S has "system:masters" group with admin priviliges.
+> 
+>  To distinct admin user from non-admin user, it should be added to that group by adding "/O=system:masters" within a certificate
+```
+openssl req -new -key apiserver-kubelet-client.key -subj "/CN=system:apiserver-kubelet-client/O=system:masters" -out apiserver-kubelet-client.csr
+```
+
+Generate a new `certificate`, by signing the `CSR` with CA key pair
+> **NOTE**: This time the `certificate` is signed by CA, not self-signed
+```
+openssl x509 -req -in apiserver-kubelet-client.csr -CA ca.crt -CAkey ca.key -out apiserver-kubelet-client.crt
+```
+
+
+### Apiserver-Etcd-Client
+
+> **NOTE**: When `api-server` acts as a Client for the `etcd`.
+
+The following will be generated eventually:
+- `apiserver-etcd-client.key` - the `private key`;
+- `apiserver-etcd-client.crt` - the `certificate`.
+
+> **NOTE**: The `certificate` must contain information, that this Client requires admin privileges.
+
+Generate new `private key` 
+```
+openssl genrsa -out apiserver-etcd-client.key 2048
+```
+
+Generate new `CSR` (Certificate Signing Request), based on the `private key` from above
+
+> **NOTE**: This is a system component, part of the Controlplane. Thus, it's name must start with `system:` prefix.
+
+> **NOTE**: K8S has "system:masters" group with admin priviliges.
+> 
+>  To distinct admin user from non-admin user, it should be added to that group by adding "/O=system:masters" within a certificate
+```
+openssl req -new -key apiserver-etcd-client.key -subj "/CN=system:apiserver-etcd-client/O=system:masters" -out apiserver-etcd-client.csr
+```
+
+Generate a new `certificate`, by signing the `CSR` with CA key pair
+> **NOTE**: This time the `certificate` is signed by CA, not self-signed
+```
+openssl x509 -req -in apiserver-etcd-client.csr -CA ca.crt -CAkey ca.key -out apiserver-etcd-client.crt
+```
 
 
 
+### Kubelet-Apiserver-Client
+
+> **NOTE**: When `kubelet` acts as a Client for the `api-server`.
+
+The following will be generated eventually:
+- `kubelet-apiserver-client.key` - the `private key`;
+- `kubelet-apiserver-client.crt` - the `certificate`.
+
+> **NOTE**: The `certificate` must contain information, that this Client requires admin privileges.
+
+Generate new `private key` 
+```
+openssl genrsa -out kubelet-apiserver-client.key 2048
+```
+
+Generate new `CSR` (Certificate Signing Request), based on the `private key` from above
+
+> **NOTE**: K8S has "system:masters" group with admin priviliges.
+> 
+>  To distinct admin user from non-admin user, it should be added to that group by adding "/O=system:masters" within a certificate
+```
+openssl req -new -key kubelet-apiserver-client.key -subj "/CN=kubelet-apiserver-client/O=system:masters" -out kubelet-apiserver-client.csr
+```
+
+Generate a new `certificate`, by signing the `CSR` with CA key pair
+> **NOTE**: This time the `certificate` is signed by CA, not self-signed
+```
+openssl x509 -req -in kubelet-apiserver-client.csr -CA ca.crt -CAkey ca.key -out kubelet-apiserver-client.crt
+```
+
+
+
+
+## Use Cases
+
+### API
+
+Call K8S API as an admin user
+```
+curl https://kube-apiserver:6443/api/v1/pods \
+--key admin.key \
+--cert admin.crt \
+--cacert ca.crt
+```
 
 
 
