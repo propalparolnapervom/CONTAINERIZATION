@@ -1,5 +1,7 @@
 # CERTIFICATES 
 
+[Docs](https://kubernetes.io/docs/setup/best-practices/certificates/)
+
 ## Overall 
 
 To make secure SSL/TLS connection:
@@ -51,7 +53,7 @@ To generate a certificates, for example following tools could be used:
 - easyrsa;
 - cfssl.
 
-
+> **NOTE**: In case of `kubeadm` tool using it generates certificates instead of you.
 
 
 ### Generate: Certificate Authority (CA)
@@ -527,7 +529,59 @@ users:
 
 
 
+## Troubleshoot
 
+[Docs](https://kubernetes.io/docs/setup/best-practices/certificates/)
+
+[Checklist from the course](https://github.com/mmumshad/kubernetes-the-hard-way/tree/master/tools)
+
+If you installed K8S:
+- manually - then:
+   - you installed componenents manually;
+   - you generated certificates manually;
+- via `kubeadm` tool:
+   - the tool installed components for you as a Pods;
+   - the tool generated certificates for you.
+
+Find options for `api-server`, for example - to see which certificates it uses.
+
+### Show: Certificate Content
+
+Show the content of `certificate`
+```
+openssl x509 -in apiserver.crt -text -noout
+```
+
+### Show: Logs (K8S installed manualy)
+
+If K8S installed manually as components on OS:
+```
+journalctl -u etcd.service -l
+
+   ...
+   ... tls: bad certificate ...
+   ...
+```
+
+### Show: Logs (K8S installed via `kubeadm`)
+
+If Pod with component is up and running:
+```
+kubectl logs etcd-master
+
+   ...
+   ... tls: bad certificate ...
+   ...
+```
+
+If Pod with component is down, then you can try to view logs from underlying layer - Docker:
+```
+# Find the container
+docker ps -a
+
+# View the log of the container
+docker logs 87cdflskfj
+```
 
 
 
