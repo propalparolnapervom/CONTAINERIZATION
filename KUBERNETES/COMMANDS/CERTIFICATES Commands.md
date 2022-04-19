@@ -35,6 +35,7 @@ Thus, we need both **`*.crt` certificate** and corresponding **`*.key` private k
 - Server Certificates:
    - `etcdserver`;
    - `apiserver`;
+   - `kubelet`
 
 
 ## Generate
@@ -222,7 +223,11 @@ openssl x509 -req -in kube-proxy.csr -CA ca.crt -CAkey ca.key -out kube-proxy.cr
 
 #### Apiserver-Kubelet-Client
 
-> **NOTE**: When `api-server` acts as a Client for the `kubelet`.
+> **NOTE**: Only if you want to use different cert/key pairs for cases, when `api-server` acts as:
+> 
+> - server
+> - client (for the `kubelet`)
+
 
 The following will be generated eventually:
 - `apiserver-kubelet-client.key` - the `private key`;
@@ -255,7 +260,10 @@ openssl x509 -req -in apiserver-kubelet-client.csr -CA ca.crt -CAkey ca.key -out
 
 #### Apiserver-Etcd-Client
 
-> **NOTE**: When `api-server` acts as a Client for the `etcd`.
+> **NOTE**: Only if you want to use different cert/key pairs for cases, when `api-server` acts as:
+> 
+> - server
+> - client (for the `etcd`)
 
 The following will be generated eventually:
 - `apiserver-etcd-client.key` - the `private key`;
@@ -289,33 +297,47 @@ openssl x509 -req -in apiserver-etcd-client.csr -CA ca.crt -CAkey ca.key -out ap
 
 #### Kubelet-Apiserver-Client
 
-> **NOTE**: When `kubelet` acts as a Client for the `api-server`.
 
-The following will be generated eventually:
-- `kubelet-apiserver-client.key` - the `private key`;
-- `kubelet-apiserver-client.crt` - the `certificate`.
+As `kubelete` installed on each Worker Node, the following will be generated eventually:
+- for 1st Worker Node, which name is `node01`;
+   - `kubelet-client-node01.key` - the `private key`;
+   - `kubelet-client-node01.crt` - the `certificate`.
+- for 2nd Worker Node, which name is `node02`;
+   - `kubelet-client-node02.key` - the `private key`;
+   - `kubelet-client-node02.crt` - the `certificate`.
+- for 3rd Worker Node, which name is `node03`;
+   - `kubelet-client-node03.key` - the `private key`;
+   - `kubelet-client-node03.crt` - the `certificate`.
+- etc
 
-> **NOTE**: The `certificate` must contain information, that this Client requires admin privileges.
+
 
 Generate new `private key` 
 ```
-openssl genrsa -out kubelet-apiserver-client.key 2048
+openssl genrsa -out kubelet-client-node01.key 2048
 ```
 
 Generate new `CSR` (Certificate Signing Request), based on the `private key` from above
 
-> **NOTE**: K8S has "system:masters" group with admin priviliges.
+> **NOTE**: This is a system component, but not part of the Controlplane. 
+> As `api-server` must understand that 1) this client is a Worker Node; 2) the Node is specific one, and some privileges should be granted to it,
+> the name within `kubelet` cert must be in the `system:node:<NODE_NAME>` format.
+
+
+> **NOTE**: K8S has "system:nodes" group with some node priviliges.
 > 
->  To distinct admin user from non-admin user, it should be added to that group by adding "/O=system:masters" within a certificate
+> The `kubelet` cert as a Client should be added to that group by adding "/O=system:nodes" within a certificate
 ```
-openssl req -new -key kubelet-apiserver-client.key -subj "/CN=kubelet-apiserver-client/O=system:masters" -out kubelet-apiserver-client.csr
+openssl req -new -key kubelet-client-node01.key -subj "/CN=system:node:node01/O=system:nodes" -out kubelet-client-node01.csr
 ```
 
 Generate a new `certificate`, by signing the `CSR` with CA key pair
 > **NOTE**: This time the `certificate` is signed by CA, not self-signed
 ```
-openssl x509 -req -in kubelet-apiserver-client.csr -CA ca.crt -CAkey ca.key -out kubelet-apiserver-client.crt
+openssl x509 -req -in kubelet-client-node01.csr -CA ca.crt -CAkey ca.key -out kubelet-client-node01.crt
 ```
+
+
 
 
 
@@ -364,7 +386,99 @@ openssl x509 -req -in etcdserver.csr -CA ca.crt -CAkey ca.key -out etcdserver.cr
 ```
 
 
+#### Api-Server
 
+The following will be generated eventually:
+- `apiserver.key` - the `private key`;
+- `apiserver.crt` - the `certificate`.
+
+
+> **NOTE**: The `certificate` must contain information, that this Server requires admin privileges.
+
+
+Generate new `private key` 
+```
+openssl genrsa -out apiserver.key 2048
+```
+
+As `api-server` is kinds central place for all activitiy, it shoulb be available under many names:
+- kubernetes
+- kubernetes.default
+- kubernetes.default.svc
+- kubernetes.default.svc.cluster.local
+- 10.96.0.1 (IP of the host server for master node)
+- 172.17.0.87 (IP of the Pod with its container)
+
+To specify all these multiple alternative names during certificate generation, a config file could be used:
+```
+cat << EOF > openssl.cnf
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+countryName = UA
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = kubernetes
+DNS.2 = kubernetes.default
+DNS.3 = kubernetes.default.svc
+DNS.4 = kubernetes.default.svc.cluster.local
+IP.1 = 10.96.0.1
+IP.2 = 172.17.0.87
+EOF
+```
+
+Generate new `CSR` (Certificate Signing Request), based on the:
+- `private key` from above;
+- `openssl.cnf` from above.
+
+```
+openssl req -new -key apiserver.key -subj "/CN=kube-apiserver" -out apiserver.csr -config openssl.cnf
+```
+
+Generate a new `certificate`, by signing the `CSR` with CA key pair
+> **NOTE**: This time the `certificate` is signed by CA, not self-signed
+```
+openssl x509 -req -in apiserver.csr -CA ca.crt -CAkey ca.key -out apiserver.crt
+```
+
+
+
+#### Kubelet
+
+As `kubelete` installed on each Worker Node, the following will be generated eventually:
+- for 1st Worker Node, which name is `node01`;
+   - `kubelet-node01.key` - the `private key`;
+   - `kubelet-node01.crt` - the `certificate`.
+- for 2nd Worker Node, which name is `node02`;
+   - `kubelet-node02.key` - the `private key`;
+   - `kubelet-node02.crt` - the `certificate`.
+- for 3rd Worker Node, which name is `node03`;
+   - `kubelet-node03.key` - the `private key`;
+   - `kubelet-node03.crt` - the `certificate`.
+- etc
+
+
+Generate new `private key` 
+```
+openssl genrsa -out kubelet-node01.key 2048
+```
+
+Generate new `CSR` (Certificate Signing Request), based on the `private key` from above
+
+> **NOTE**: As `kubelet` is installed on each Worker Node, each certificate must contain the name of the Worker Node instead of `kubelet`
+```
+openssl req -new -key kubelet-node01.key -subj "/CN=node01" -out kubelet-node01.csr
+```
+
+Generate a new `certificate`, by signing the `CSR` with CA key pair
+> **NOTE**: This time the `certificate` is signed by CA, not self-signed
+```
+openssl x509 -req -in kubelet-node01.csr -CA ca.crt -CAkey ca.key -out kubelet-node01.crt
+```
 
 
 
