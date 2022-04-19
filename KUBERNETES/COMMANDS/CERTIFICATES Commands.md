@@ -22,22 +22,22 @@ The same Kubernetes components can act both as Servers (when they provide info) 
 
 
 Thus, we need both **`*.crt` certificate** and corresponding **`*.key` private key** of following types:
-- Server Certificates:
-   - `etcdserver`;
-   - `apiserver`;
+- CA Certificates:
+   - `ca`;
 - Client Certificates:
-   - `admin` (the one that Admin will use via `kubectl`, for ex);
+   - `admin` (the one that Admin will use via `kubectl` or `curl`, for ex);
    - `scheduler`;
    - `controller-manager`;
    - `kube-proxy`;
    - `apiserver-kubelet-client` (when Api-server acts as a Client for the Kubelet);
    - `apiserver-etcd-client` (when Api-server acts as a Client for the Etcd);
    - `kubelet-apiserver-client` (when Kubelet acts as a Client for the Api-server);
-- CA Certificates:
-   - `ca`.
+- Server Certificates:
+   - `etcdserver`;
+   - `apiserver`;
 
 
-## Generate 
+## Generate
 
 CA certificate will be self-signed (as we don't use other Certificate Authority in this example).
 
@@ -45,13 +45,23 @@ All other certificates will be signed by CA certificate.
 
 K8S doesn't have users, but cert/private-key pair is something like user/password pair - just more secure.
 
+To generate a certificates, for example following tools could be used:
+- openssl;
+- easyrsa;
+- cfssl.
 
-### Certificate Authority (CA)
+
+
+
+### Generate: Certificate Authority (CA)
 
 The following will be generated eventually:
 - `ca.key` - the `private key`;
-- `ca.crt` - the `certificate`;
+- `ca.crt` - the `certificate` (so-called `CA root certificate`);
 - `ca.srl` - manually created file with some random sequence number, that CA will use to sign other certificates (if needed)
+
+> **NOTE**: For Client to verify Server certificate, signed by CA and vise-versa - each Client and Server must have CA root certificate.
+> As each Client or Server certificate is signed with `ca.key` private key, with help of `ca.crt` CA root certificate this sign can be verified.
 
 
 Generate new `private key` 
@@ -75,7 +85,15 @@ openssl x509 -req -in ca.csr -signkey ca.key -out ca.crt
 > `echo 02 > ca.srl`
 
 
-### Admin User
+
+
+### Generate: Client Certificates
+
+> **NOTE**: For Client to verify Server certificate, signed by CA and vise-versa - each Client and Server must have CA root certificate.
+> As each Client or Server certificate is signed with `ca.key` private key, with help of `ca.crt` CA root certificate this sign can be verified.
+
+
+#### Admin User
 
 The following will be generated eventually:
 - `admin.key` - the `private key`;
@@ -106,7 +124,7 @@ Generate a new `certificate`, by signing the `CSR` with CA key pair
 openssl x509 -req -in admin.csr -CA ca.crt -CAkey ca.key -out admin.crt
 ```
 
-### Kube-Scheduler
+#### Kube-Scheduler
 
 The following will be generated eventually:
 - `scheduler.key` - the `private key`;
@@ -139,7 +157,7 @@ openssl x509 -req -in scheduler.csr -CA ca.crt -CAkey ca.key -out scheduler.crt
 
 
 
-### Controller-Manager
+#### Controller-Manager
 
 The following will be generated eventually:
 - `controller-manager.key` - the `private key`;
@@ -172,7 +190,7 @@ openssl x509 -req -in controller-manager.csr -CA ca.crt -CAkey ca.key -out contr
 
 
 
-### Kube-Proxy
+#### Kube-Proxy
 
 The following will be generated eventually:
 - `kube-proxy.key` - the `private key`;
@@ -202,7 +220,7 @@ openssl x509 -req -in kube-proxy.csr -CA ca.crt -CAkey ca.key -out kube-proxy.cr
 ```
 
 
-### Apiserver-Kubelet-Client
+#### Apiserver-Kubelet-Client
 
 > **NOTE**: When `api-server` acts as a Client for the `kubelet`.
 
@@ -235,7 +253,7 @@ openssl x509 -req -in apiserver-kubelet-client.csr -CA ca.crt -CAkey ca.key -out
 ```
 
 
-### Apiserver-Etcd-Client
+#### Apiserver-Etcd-Client
 
 > **NOTE**: When `api-server` acts as a Client for the `etcd`.
 
@@ -269,7 +287,7 @@ openssl x509 -req -in apiserver-etcd-client.csr -CA ca.crt -CAkey ca.key -out ap
 
 
 
-### Kubelet-Apiserver-Client
+#### Kubelet-Apiserver-Client
 
 > **NOTE**: When `kubelet` acts as a Client for the `api-server`.
 
@@ -301,12 +319,73 @@ openssl x509 -req -in kubelet-apiserver-client.csr -CA ca.crt -CAkey ca.key -out
 
 
 
+### Generate: Server Certificates
+
+> **NOTE**: For Client to verify Server certificate, signed by CA and vise-versa - each Client and Server must have CA root certificate.
+> As each Client or Server certificate is signed with `ca.key` private key, with help of `ca.crt` CA root certificate this sign can be verified.
+
+
+#### Etcdserver
+
+The following will be generated eventually:
+- `etcdserver.key` - the `private key`;
+- `etcdserver.crt` - the `certificate`.
+
+In case of multiple `etcd` servers (which form a cluster for high-availability), key/certs should be generated for each additional instance:
+- for 1st additional `etcd` server;
+   - `etcdpeer1.key` - the `private key`;
+   - `etcdpeer1.crt` - the `certificate`.
+- for 2nd additional `etcd` server;
+   - `etcdpeer2.key` - the `private key`;
+   - `etcdpeer2.crt` - the `certificate`.
+- etc
+
+
+> **NOTE**: The `certificate` must contain information, that this Server requires admin privileges.
+
+Generate new `private key` 
+```
+openssl genrsa -out etcdserver.key 2048
+```
+
+Generate new `CSR` (Certificate Signing Request), based on the `private key` from above
+
+> **NOTE**: K8S has "system:masters" group with admin priviliges.
+> 
+>  To distinct admin user from non-admin user, it should be added to that group by adding "/O=system:masters" within a certificate
+```
+openssl req -new -key etcdserver.key -subj "/CN=etcd-server/O=system:masters" -out etcdserver.csr
+```
+
+Generate a new `certificate`, by signing the `CSR` with CA key pair
+> **NOTE**: This time the `certificate` is signed by CA, not self-signed
+```
+openssl x509 -req -in etcdserver.csr -CA ca.crt -CAkey ca.key -out etcdserver.crt
+```
+
+
+
+
+
+
+
+
 
 ## Use Cases
 
-### API
+As admin user, you have:
+- admin.crt - as your certificate (thus, kinda userid);
+- admin.key - as your private key (thus, kinds password);
+- ca.crt - as CA certificate, that was used to sign your admin.crt certificate;
 
-Call K8S API as an admin user
+You'd like to connect to the K8S cluster, located at `https://kube-apiserver:6443`.
+
+How can you use those certificates/keys?
+
+
+### Direct API Call
+
+Make a direct API call
 ```
 curl https://kube-apiserver:6443/api/v1/pods \
 --key admin.key \
@@ -314,7 +393,23 @@ curl https://kube-apiserver:6443/api/v1/pods \
 --cacert ca.crt
 ```
 
+### Kuboconfig
 
+Place certificates/keys information within special file, which name is `kube-config.yaml`
+```
+apiVersion: v1
+clusters: 
+- cluster:
+     certificate-authority: ca.crt
+     server: https://kube-apiserver:6443
+  name: kubernetes
+kind: Config
+users:
+- name: kubernetes-admin
+  user: 
+     client-certificate: admin.crt
+     client-key: admin.key
+```
 
 
 
