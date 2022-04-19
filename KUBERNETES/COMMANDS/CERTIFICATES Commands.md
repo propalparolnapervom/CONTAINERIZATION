@@ -2,7 +2,7 @@
 
 [Docs](https://kubernetes.io/docs/setup/best-practices/certificates/)
 
-## Overall 
+# Overall 
 
 To make secure SSL/TLS connection:
 - assymetric encryption (pub/private keys) is in use to encrypt traffic between client and server;
@@ -40,7 +40,7 @@ Thus, we need both **`*.crt` certificate** and corresponding **`*.key` private k
    - `kubelet`
 
 
-## Generate
+# Generate
 
 CA certificate will be self-signed (as we don't use other Certificate Authority in this example).
 
@@ -56,7 +56,7 @@ To generate a certificates, for example following tools could be used:
 > **NOTE**: In case of `kubeadm` tool using it generates certificates instead of you.
 
 
-### Generate: Certificate Authority (CA)
+## Generate: Certificate Authority (CA)
 
 The following will be generated eventually:
 - `ca.key` - the `private key`;
@@ -90,13 +90,13 @@ openssl x509 -req -in ca.csr -signkey ca.key -out ca.crt
 
 
 
-### Generate: Client Certificates
+## Generate: Client Certificates
 
 > **NOTE**: For Client to verify Server certificate, signed by CA and vise-versa - each Client and Server must have CA root certificate.
 > As each Client or Server certificate is signed with `ca.key` private key, with help of `ca.crt` CA root certificate this sign can be verified.
 
 
-#### Admin User
+### Admin User
 
 The following will be generated eventually:
 - `admin.key` - the `private key`;
@@ -127,7 +127,7 @@ Generate a new `certificate`, by signing the `CSR` with CA key pair
 openssl x509 -req -in admin.csr -CA ca.crt -CAkey ca.key -out admin.crt
 ```
 
-#### Kube-Scheduler
+### Kube-Scheduler
 
 The following will be generated eventually:
 - `scheduler.key` - the `private key`;
@@ -160,7 +160,7 @@ openssl x509 -req -in scheduler.csr -CA ca.crt -CAkey ca.key -out scheduler.crt
 
 
 
-#### Controller-Manager
+### Controller-Manager
 
 The following will be generated eventually:
 - `controller-manager.key` - the `private key`;
@@ -193,7 +193,7 @@ openssl x509 -req -in controller-manager.csr -CA ca.crt -CAkey ca.key -out contr
 
 
 
-#### Kube-Proxy
+### Kube-Proxy
 
 The following will be generated eventually:
 - `kube-proxy.key` - the `private key`;
@@ -223,7 +223,7 @@ openssl x509 -req -in kube-proxy.csr -CA ca.crt -CAkey ca.key -out kube-proxy.cr
 ```
 
 
-#### Apiserver-Kubelet-Client
+### Apiserver-Kubelet-Client
 
 > **NOTE**: Only if you want to use different cert/key pairs for cases, when `api-server` acts as:
 > 
@@ -260,7 +260,7 @@ openssl x509 -req -in apiserver-kubelet-client.csr -CA ca.crt -CAkey ca.key -out
 ```
 
 
-#### Apiserver-Etcd-Client
+### Apiserver-Etcd-Client
 
 > **NOTE**: Only if you want to use different cert/key pairs for cases, when `api-server` acts as:
 > 
@@ -297,7 +297,7 @@ openssl x509 -req -in apiserver-etcd-client.csr -CA ca.crt -CAkey ca.key -out ap
 
 
 
-#### Kubelet-Apiserver-Client
+### Kubelet-Apiserver-Client
 
 
 As `kubelete` installed on each Worker Node, the following will be generated eventually:
@@ -343,13 +343,13 @@ openssl x509 -req -in kubelet-client-node01.csr -CA ca.crt -CAkey ca.key -out ku
 
 
 
-### Generate: Server Certificates
+## Generate: Server Certificates
 
 > **NOTE**: For Client to verify Server certificate, signed by CA and vise-versa - each Client and Server must have CA root certificate.
 > As each Client or Server certificate is signed with `ca.key` private key, with help of `ca.crt` CA root certificate this sign can be verified.
 
 
-#### Etcdserver
+### Etcdserver
 
 The following will be generated eventually:
 - `etcdserver.key` - the `private key`;
@@ -388,7 +388,7 @@ openssl x509 -req -in etcdserver.csr -CA ca.crt -CAkey ca.key -out etcdserver.cr
 ```
 
 
-#### Api-Server
+### Api-Server
 
 The following will be generated eventually:
 - `apiserver.key` - the `private key`;
@@ -449,7 +449,7 @@ openssl x509 -req -in apiserver.csr -CA ca.crt -CAkey ca.key -out apiserver.crt
 
 
 
-#### Kubelet
+### Kubelet
 
 As `kubelete` installed on each Worker Node, the following will be generated eventually:
 - for 1st Worker Node, which name is `node01`;
@@ -487,7 +487,7 @@ openssl x509 -req -in kubelet-node01.csr -CA ca.crt -CAkey ca.key -out kubelet-n
 
 
 
-## Use Cases
+# Use Cases
 
 As admin user, you have:
 - admin.crt - as your certificate (thus, kinda userid);
@@ -499,7 +499,7 @@ You'd like to connect to the K8S cluster, located at `https://kube-apiserver:644
 How can you use those certificates/keys?
 
 
-### Direct API Call
+## Direct API Call
 
 Make a direct API call
 ```
@@ -509,7 +509,7 @@ curl https://kube-apiserver:6443/api/v1/pods \
 --cacert ca.crt
 ```
 
-### Kuboconfig
+## Kuboconfig
 
 Place certificates/keys information within special file, which name is `kube-config.yaml`
 ```
@@ -528,8 +528,43 @@ users:
 ```
 
 
+# Rotate
 
-## Troubleshoot
+Each certificate has an expiration date. New users are added to the cluster. 
+
+So you have to re-issue the certificates from time to time.
+
+> **NOTE**: All certificates on the K8S are signed by some CA cert/key pair. The server, where CA cert/key pair is located, is called `CA server`.
+> Usually the pair is located on the Master Node - thus, it's a `CA server` at the same time.
+
+As an admin user, you:
+- installed and configured whole K8S cluster, including certificates/keys for its each component;
+- own your own cert/key pair to connect to K8S cluster;
+
+But then a new admin connected to the company. He needs an access to K8S cluster as well. 
+
+You have to provide him with his own cert/key pair.
+
+You can do it:
+- manually
+- via `Certificates API`, provided by K8S cluster
+
+## Manually
+
+- new admin generates `private key` by himself;
+- new admin creates a `CSR` with help of the `private key`;
+- new admin provides the `CSR` to you;
+- you log in to the CA server (via SSH);
+- you use `ca.crt` and `ca.key` to sign the `CSR`, a new `certificate` is generated;
+- you provide the `certifiate` to the new admin
+
+Now new admin has its own `cert`/`key` pair to connect to the K8S cluster.
+
+
+## Certificates API
+
+
+# Troubleshoot
 
 [Docs](https://kubernetes.io/docs/setup/best-practices/certificates/)
 
@@ -545,14 +580,14 @@ If you installed K8S:
 
 Find options for `api-server`, for example - to see which certificates it uses.
 
-### Show: Certificate Content
+## Show: Certificate Content
 
 Show the content of `certificate`
 ```
 openssl x509 -in apiserver.crt -text -noout
 ```
 
-### Show: Logs (K8S installed manualy)
+## Show: Logs (K8S installed manualy)
 
 If K8S installed manually as components on OS:
 ```
@@ -563,7 +598,7 @@ journalctl -u etcd.service -l
    ...
 ```
 
-### Show: Logs (K8S installed via `kubeadm`)
+## Show: Logs (K8S installed via `kubeadm`)
 
 If Pod with component is up and running:
 ```
