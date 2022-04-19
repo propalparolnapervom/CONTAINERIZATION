@@ -630,6 +630,29 @@ kubectl get secrets envsecrets -o yaml
 printf "<value>" | base64 -D
 ```
 
+# CERTIFICATE SIGNING REQUEST (CSR)
+
+List `CSR` object
+```
+kubectl get csr
+```
+
+Approve specific CSR
+```
+kubectl certificate approve jane 
+```
+
+Get `certificate` for signed `CSR` (and provide to the requester, if needed):
+```
+# Get CSR object as YAML
+kubectl get csr jane -o yaml
+
+# Copy its `status.certificate` value
+
+# Decode it from base64 format
+```
+
+
 # PORTS
 
 Port forward specific pod
