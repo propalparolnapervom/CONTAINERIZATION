@@ -674,7 +674,7 @@ Port forward pod by its template name
 kubectl port-forward -n oos $(kubectl get pods -n oos| grep port-information-domain | awk '{print $1}') 8080:8080
 ```
 
-# ROLE
+# CLUSTERROLE
 
 Find all `roles` handled by Kubernetes
 ```
@@ -694,6 +694,22 @@ kubectl get clusterrolebinding -n kube-system
 See what `group` is bound to `role` (`view` role in the example)
 ```
 kubectl describe clusterrolebinding -n kube-system view
+```
+
+# Check Access
+
+To see, if **your current** user can do specific actions
+```
+kubectl auth can-i create deployments
+
+kubectl auth can-i delete nodes
+```
+
+To see, if not your current user, but **some other** user can do specific actions (`dev-user`, for example)
+```
+kubectl auth can-i create deployments --as dev-user 
+
+kubectl auth can-i delete nodes --as dev-user
 ```
 
 
