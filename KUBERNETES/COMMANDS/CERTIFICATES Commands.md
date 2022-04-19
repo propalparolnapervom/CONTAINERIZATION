@@ -487,47 +487,6 @@ openssl x509 -req -in kubelet-node01.csr -CA ca.crt -CAkey ca.key -out kubelet-n
 
 
 
-# Use Cases
-
-As admin user, you have:
-- admin.crt - as your certificate (thus, kinda userid);
-- admin.key - as your private key (thus, kinds password);
-- ca.crt - as CA certificate, that was used to sign your admin.crt certificate;
-
-You'd like to connect to the K8S cluster, located at `https://kube-apiserver:6443`.
-
-How can you use those certificates/keys?
-
-
-## Direct API Call
-
-Make a direct API call
-```
-curl https://kube-apiserver:6443/api/v1/pods \
---key admin.key \
---cert admin.crt \
---cacert ca.crt
-```
-
-## Kuboconfig
-
-Place certificates/keys information within special file, which name is `kube-config.yaml`
-```
-apiVersion: v1
-clusters: 
-- cluster:
-     certificate-authority: ca.crt
-     server: https://kube-apiserver:6443
-  name: kubernetes
-kind: Config
-users:
-- name: kubernetes-admin
-  user: 
-     client-certificate: admin.crt
-     client-key: admin.key
-```
-
-
 # Rotation
 
 Each certificate has an expiration date. New users are added to the cluster. 
@@ -770,6 +729,79 @@ docker logs 87cdflskfj
 
 
 
+# Use Cases
+
+As admin user, you have:
+- admin.crt - as your certificate (thus, kinda userid);
+- admin.key - as your private key (thus, kinds password);
+- ca.crt - as CA certificate, that was used to sign your admin.crt certificate;
+
+You'd like to connect to the K8S cluster, located at `https://kube-apiserver:6443`.
+
+How can you use those certificates/keys?
+
+
+## Direct API Call
+
+Make a direct API call
+```
+curl https://kube-apiserver:6443/api/v1/pods \
+--key admin.key \
+--cert admin.crt \
+--cacert ca.crt
+```
+
+> **NOTE**: If you run `kubectl proxy`, it starts locally a Proxy server locally, which:
+> - listens to port 8081;
+> - gets all your certs/credentials from KubeConfig file;
+> - proxies all your requests to K8S via `curl`, without need of key credentials.
+
+## kubectl with options
+
+Run `kubectl` with corresponding options
+```
+kubectl get pods \
+--server kube-apiserver:6443
+--client-key admin.key \
+--client-certificate admin.crt \
+--certificate-authority ca.crt
+```
+
+
+## kubectl with KubeConfig
+
+Place certificates/keys information within special file, which name is `KubeConfig`
+```
+cat $HOME/.kube/config
+
+
+apiVersion: v1
+clusters: 
+- cluster:
+     certificate-authority: ca.crt
+     server: https://kube-apiserver:6443
+  name: kubernetes
+kind: Config
+users:
+- name: kubernetes-admin
+  user: 
+     client-certificate: admin.crt
+     client-key: admin.key
+```
+
+Then you can specify `KubeConfig` as an option (instead of many other options)
+```
+kubectl get pods \
+--kubeconfig $HOME/.kube/config
+```
+
+If no option is specified:
+```
+kubectl get pods
+```
+
+Then:
+- by default, `KubeConfig` file is expected within `~/.kube/config` file;
 
 
 
