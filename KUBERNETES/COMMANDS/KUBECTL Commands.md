@@ -637,9 +637,13 @@ List `CSR` object
 kubectl get csr
 ```
 
-Approve specific CSR
+Approve/Deny specific CSR
 ```
+# Approve
 kubectl certificate approve jane 
+
+# Deny
+kubectl certificate deny jane 
 ```
 
 Get `certificate` for signed `CSR` (and provide to the requester, if needed):
@@ -650,6 +654,11 @@ kubectl get csr jane -o yaml
 # Copy its `status.certificate` value
 
 # Decode it from base64 format
+```
+
+Delete `CSR`
+```
+kubectl delete csr jane
 ```
 
 
