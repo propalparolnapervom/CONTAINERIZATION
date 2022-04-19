@@ -528,7 +528,7 @@ users:
 ```
 
 
-# Rotate
+# Rotation
 
 Each certificate has an expiration date. New users are added to the cluster. 
 
@@ -551,17 +551,141 @@ You can do it:
 
 ## Manually
 
-- new admin generates `private key` by himself;
-- new admin creates a `CSR` with help of the `private key`;
-- new admin provides the `CSR` to you;
-- you log in to the CA server (via SSH);
-- you use `ca.crt` and `ca.key` to sign the `CSR`, a new `certificate` is generated;
-- you provide the `certifiate` to the new admin
+- new admin:
+   - generates `private key` by himself;
+   - creates a `CSR` with help of that `private key`;
+   - provides the `CSR` to you;
+
+- you:
+   - log in to the `CA server` (via SSH);
+   - use `ca.crt` and `ca.key` to sign the `CSR`, a new `certificate` is generated;
+   - provide newly generated `certifiate` to the new admin;
 
 Now new admin has its own `cert`/`key` pair to connect to the K8S cluster.
 
 
 ## Certificates API
+
+### Overall
+
+`Control Manager` has components (`CSR-APPROVING` and `CSR-SIGNING`), which do generation of new certificates instead of you.
+
+These components provide an API, which is called `Certificates API`.
+
+In this case.
+
+- new admin:
+   - generates `private key` by himself;
+   - creates a `CSR` with help of that `private key`;
+   - provides the `CSR` to you;
+
+- you:
+   - send `CSR` via API, which creates a `CertificateSigningRequest` object within K8S cluster;
+   - thus, now this object can be seen, reviewed and approved by any admin;
+   - once approved, the certificate can be extracted and shared with user.
+
+So, no need to manually log in to the CA server (which is Master Node, most likely). All done via API
+
+
+### Details: New Admin Side
+
+New admin Jane:
+
+1) Generates a `private key`:
+```
+openssl genrsa -out jane.key 2048
+```
+
+2) Generates a `CSR`:
+```
+openssl req -new -key jane.key -subj "/CN=jane" -out jane.csr
+```
+
+3) Provides a `CSR` for you.
+
+
+### Details: Your Side
+
+You:
+
+1) Get a `CSR` from a new admin
+```
+cat jane.csr 
+
+-----BEGIN CERTIFICATE REQUEST-----
+MIICVDCCATwCAQAwDzENMAsGA1UEAwwEamFuZTCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBAK3suFZA0dJkifS+POdJmOJgPj1AVOPIvP1GZgrPjDYrjnhc
+V9QovWg93HMJyP7mbJJvVePSIDg3VzrFq9dlycDoEiD0KtEIqm+Y/omoff5pTHuN
+oN4h5zY9g7pXF7iPSQA8XvUxOnJ8smS2+UfgpNPgWrOoSHgKrFPMV+h7SuEwjP3Y
+8N6kab6BTz2uEGUlB32n857Bq6vHbYgktCdoAG1QvBNXZyxd0q0jUbwbv4z+mqkB
+7pNJ31yWBF5x63XYSAa+SQzW2dWEcRtR7A0pxZjhdoLm6LUGVNYGXWDm5HIc0FJx
+tNaVfGcDu9l+USDnhR6Rk6nyMadXRUaktH0bQ9cCAwEAAaAAMA0GCSqGSIb3DQEB
+CwUAA4IBAQCLxCarwKwC2rIdp+MzX4q2fBq6QJ+89MLqrbbHzk0dk5Nq5HvEvL1f
+7KXBUsT7uF4RbVEp9syph8DQdjwQNBmW6pgtXqaBppb2TrRfxnNKwvCa/POCyMjY
+SHA4VopTxn8A0vxfO43zvcq7p4tYuNstsKQXt1KQ5PcrmzDHyzJYfDdm6/7IjTJ5
+hdndAKNrdeQajmRz04zLBbo42iUkNpRaFzV5biYhIfadDuUhc6LMXbXdmJIpWGkW
+42ON7s5D0PKX0fdxZPbsnwP9xeBy5We70it5WAdXu1tNVAywFRXGJwTsftTfZUkA
+DzoIU39WlBOklvR/8fohpmtWGK53h5Q7
+-----END CERTIFICATE REQUEST-----
+```
+
+2) Encode the `CSR` in base64 format:
+```
+cat jane.csr | base64
+
+LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZEQ0NBVHdDQVFBd0R6RU5NQXNHQTFVRUF3d0VhbUZ1WlRDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRApnZ0VQQURDQ0FRb0NnZ0VCQUszc3VGWkEwZEpraWZTK1BPZEptT0pnUGoxQVZPUEl2UDFHWmdyUGpEWXJqbmhjClY5UW92V2c5M0hNSnlQN21iSkp2VmVQU0lEZzNWenJGcTlkbHljRG9FaUQwS3RFSXFtK1kvb21vZmY1cFRIdU4Kb040aDV6WTlnN3BYRjdpUFNRQThYdlV4T25KOHNtUzIrVWZncE5QZ1dyT29TSGdLckZQTVYraDdTdUV3alAzWQo4TjZrYWI2QlR6MnVFR1VsQjMybjg1N0JxNnZIYllna3RDZG9BRzFRdkJOWFp5eGQwcTBqVWJ3YnY0eittcWtCCjdwTkozMXlXQkY1eDYzWFlTQWErU1F6VzJkV0VjUnRSN0EwcHhaamhkb0xtNkxVR1ZOWUdYV0RtNUhJYzBGSngKdE5hVmZHY0R1OWwrVVNEbmhSNlJrNm55TWFkWFJVYWt0SDBiUTljQ0F3RUFBYUFBTUEwR0NTcUdTSWIzRFFFQgpDd1VBQTRJQkFRQ0x4Q2Fyd0t3QzJySWRwK016WDRxMmZCcTZRSis4OU1McXJiYkh6azBkazVOcTVIdkV2TDFmCjdLWEJVc1Q3dUY0UmJWRXA5c3lwaDhEUWRqd1FOQm1XNnBndFhxYUJwcGIyVHJSZnhuTkt3dkNhL1BPQ3lNalkKU0hBNFZvcFR4bjhBMHZ4Zk80M3p2Y3E3cDR0WXVOc3RzS1FYdDFLUTVQY3JtekRIeXpKWWZEZG02LzdJalRKNQpoZG5kQUtOcmRlUWFqbVJ6MDR6TEJibzQyaVVrTnBSYUZ6VjViaVloSWZhZER1VWhjNkxNWGJYZG1KSXBXR2tXCjQyT043czVEMFBLWDBmZHhaUGJzbndQOXhlQnk1V2U3MGl0NVdBZFh1MXROVkF5d0ZSWEdKd1RzZnRUZlpVa0EKRHpvSVUzOVdsQk9rbHZSLzhmb2hwbXRXR0s1M2g1UTcKLS0tLS1FTkQgQ0VSVElGSUNBVEUgUkVRVUVTVC0tLS0tCg==
+```
+
+3) Create and deploy a manifest file for a `CertificateSigningRequest` object, with encoded `CSR` included as a request
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: jane
+spec:
+  request:  LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZEQ0NBVHdDQVFBd0R6RU5NQXNHQTFVRUF3d0VhbUZ1WlRDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRApnZ0VQQURDQ0FRb0NnZ0VCQUszc3VGWkEwZEpraWZTK1BPZEptT0pnUGoxQVZPUEl2UDFHWmdyUGpEWXJqbmhjClY5UW92V2c5M0hNSnlQN21iSkp2VmVQU0lEZzNWenJGcTlkbHljRG9FaUQwS3RFSXFtK1kvb21vZmY1cFRIdU4Kb040aDV6WTlnN3BYRjdpUFNRQThYdlV4T25KOHNtUzIrVWZncE5QZ1dyT29TSGdLckZQTVYraDdTdUV3alAzWQo4TjZrYWI2QlR6MnVFR1VsQjMybjg1N0JxNnZIYllna3RDZG9BRzFRdkJOWFp5eGQwcTBqVWJ3YnY0eittcWtCCjdwTkozMXlXQkY1eDYzWFlTQWErU1F6VzJkV0VjUnRSN0EwcHhaamhkb0xtNkxVR1ZOWUdYV0RtNUhJYzBGSngKdE5hVmZHY0R1OWwrVVNEbmhSNlJrNm55TWFkWFJVYWt0SDBiUTljQ0F3RUFBYUFBTUEwR0NTcUdTSWIzRFFFQgpDd1VBQTRJQkFRQ0x4Q2Fyd0t3QzJySWRwK016WDRxMmZCcTZRSis4OU1McXJiYkh6azBkazVOcTVIdkV2TDFmCjdLWEJVc1Q3dUY0UmJWRXA5c3lwaDhEUWRqd1FOQm1XNnBndFhxYUJwcGIyVHJSZnhuTkt3dkNhL1BPQ3lNalkKU0hBNFZvcFR4bjhBMHZ4Zk80M3p2Y3E3cDR0WXVOc3RzS1FYdDFLUTVQY3JtekRIeXpKWWZEZG02LzdJalRKNQpoZG5kQUtOcmRlUWFqbVJ6MDR6TEJibzQyaVVrTnBSYUZ6VjViaVloSWZhZER1VWhjNkxNWGJYZG1KSXBXR2tXCjQyT043czVEMFBLWDBmZHhaUGJzbndQOXhlQnk1V2U3MGl0NVdBZFh1MXROVkF5d0ZSWEdKd1RzZnRUZlpVa0EKRHpvSVUzOVdsQk9rbHZSLzhmb2hwbXRXR0s1M2g1UTcKLS0tLS1FTkQgQ0VSVElGSUNBVEUgUkVRVUVTVC0tLS0tCg==
+  groups:
+  - system:authenticated
+  usages:
+  - server auth
+  - digital signature
+  - key encipherment
+EOF
+```
+
+4) Now you (and all other admins on K8S cluster) can see that `CSR`:
+```
+# See CSR
+kubectl get csr
+```
+
+5) Now you (and all other admins on K8S cluster) can approve that `CSR`:
+```
+# Approve specific CSR
+kubectl certificate approve jane 
+```
+
+6) Get `certificate` for signed `CSR` and provide to the new admin:
+```
+# Get CSR object as YAML
+kubectl get csr jane -o yaml
+
+# Copy its `status.certificate` value
+
+# Decode it from base64 format
+```
+
+
+
+> **NOTE**: K8S cluster uses `CA` cert/key pair to sign the `CSR` for you.
+> 
+> `Control Manager` components (`CSR-APPROVING` and `CSR-SIGNING`) are responsible for approving/signing certificates.
+> 
+> Thus, `Control Manager` has options, to specify which `CA cert/key` pair to use for such signing:
+>    - `--cluster-signing-cert-file`
+>    - `--cluster-signing-key-file`
+
 
 
 # Troubleshoot
