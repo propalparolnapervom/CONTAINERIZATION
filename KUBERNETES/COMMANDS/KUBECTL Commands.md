@@ -600,6 +600,19 @@ Create a new namespace called `dev-ns`.
 kubectl create namespace dev-ns
 ```
 
+## Is resource namespaced?
+
+```
+# List namespaced resources
+kubectl api-resources --namespaced=true
+
+# List not namespaced (clusterwide) resources
+kubectl api-resources --namespaced=false
+```
+
+
+
+
 # SECRETS
 
 ## Create 
