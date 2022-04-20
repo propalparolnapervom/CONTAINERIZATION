@@ -689,6 +689,27 @@ kubectl port-forward -n oos $(kubectl get pods -n oos| grep port-information-dom
 
 # CLUSTERROLE
 
+## Overall
+
+`Role` gives permission:
+- on some namespaced resource (pod, deployment);
+- within specific namespace (`default`, if no other specified).
+
+`ClusterRole` gives permission on some not namespaced (clusterwide) resource (node).
+
+```
+# List namespaced resources
+kubectl api-resources --namespaced=true
+
+# List not namespaced (clusterwide) resources
+kubectl api-resources --namespaced=false
+```
+
+> **NOTE**: `ClusterRole` can provide permissions to namespaced resources as well - but it will be done for all namespaces.
+> Thus, if permissions for Pod are granted via `ClusterRole`, user will have it within all namespaces.
+
+
+## List
 Find all `roles` handled by Kubernetes
 ```
 kubectl get clusterrole -n kube-system
