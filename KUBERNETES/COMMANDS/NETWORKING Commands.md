@@ -346,7 +346,7 @@ ip netns exec blue ip addr
           valid_lft forever preferred_lft forever 
 ```
 
-Thus, you can ping 
+Now, you can ping each other NS
 ```
 # red -> blue
 ip netns exec red ping 192.168.15.2
@@ -354,6 +354,197 @@ ip netns exec red ping 192.168.15.2
 # blue -> red
 ip netns exec blue ping 192.168.15.1
 ```
+
+Pay attention, that now both NS have `arp` info, which is 1) exist 2) differs from host
+```
+# host
+arp
+   Address                  HWtype  HWaddress           Flags Mask            Iface
+   ip-172-31-0-2.eu-centra  ether   0a:3c:ef:0b:8c:36   C                     eth0
+   ip-172-31-0-1.eu-centra  ether   0a:3c:ef:0b:8c:36   C                     eth0
+
+# red
+ip netns exec red arp
+   Address                  HWtype  HWaddress           Flags Mask            Iface
+   192.168.15.2             ether   66:10:01:d8:0a:c7   C                     veth-red
+
+# blue
+ip netns exec blue arp
+   Address                  HWtype  HWaddress           Flags Mask            Iface
+   192.168.15.1             ether   22:25:1f:70:a9:aa   C                     veth-blue
+```
+
+Yes, we now have network connectivity betwee `red` and `blue` NS.
+
+But what if there are a lot of such `network NS` (containers)?
+
+Like in a real world, they should be connected to a `private network`.
+
+
+#### Config Net Connectivity: Between Many NS (recommended)
+
+So we have many `network NS`, that should be connected into `private network`.
+
+To create a `physical network`, you need a `Switch`.
+
+To create a `virtual network`, you need a `virtual Switch`.
+
+Let's create a `virtual switch` inside of our `host`, then and connect all `network NS` to it.
+
+To create a `virtual switch` there're some native solutions like:
+- Linux Bridge;
+- Open vSwitch.
+
+We will use `Linux Bridge` in our case.
+
+To create a `virtual switch` on the host, we create a new interface
+```
+# Create 
+#   ip link add <INTERF NAME> type bridge
+ip link add v-net-0 type bridge
+
+# Bring it up
+ip link set dev v-net-0 up
+```
+
+> **NOTE**: 
+> 
+> From point of view of:
+>    - `host` - it's just another `interface` (just like `eth0` interface);
+>    - `network NS` - it's a `switch`, to which it can connect to;
+
+Now we have to connect `network NS` to this interface/switch (`bridge network`).
+
+We have to use `virtual cables` again.
+
+Delete already existing `virtual cable`, created earlier to connect 2 NS (if any).
+```
+# If you delete 1 end of virtual cable, the cable is deleted
+ip netns exec red ip link delete veth-red
+```
+
+Create `virtual cable` with 2 interfaces on its ends, between each NS and `bridge network`.
+```
+# ip link add <NAME OF INTERF ON CABLE END #1> type veth peer name <NAME OF INTERF ON CABLE END #2>
+
+# NS red <-> bridge network
+ip link add veth-red type veth peer name veth-red-brdg
+
+# NS blue <-> bridge network
+ip link add veth-blue type veth peer name veth-blue-brdg
+```
+
+
+
+Use `virtual cable` to attach `red` NS to `bridge network`
+```
+# ip link set <NAME OF INTERF ON CABLE END #1> netns <NS `red`>
+ip link set veth-red netns red
+
+# ip link set <NAME OF INTERF ON CABLE END #2> master <BRIDGE NETWORK (NEW INTERF ON HOST)>
+ip link set veth-red-brdg master v-net-0
+```
+
+Use `virtual cable` to attach `blue` NS to `bridge network`
+```
+# ip link set <NAME OF INTERF ON CABLE END #1> netns <NS `blue`>
+ip link set veth-blue netns blue
+
+# ip link set <NAME OF INTERF ON CABLE END #2> master <BRIDGE NETWORK (NEW INTERF ON HOST)>
+ip link set veth-blue-brdg master v-net-0
+```
+
+Now you can see attached interfaces within each `network NS`
+```
+ip netns exec red ip link 
+   1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+       link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+   12: veth-red@if11: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+       link/ether 3e:e9:d8:e1:a7:ab brd ff:ff:ff:ff:ff:ff link-netnsid 0
+
+ip netns exec blue ip link
+   1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+       link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+   10: veth-blue@if9: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+       link/ether c6:a5:d6:8e:fb:31 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+```
+
+As now both `network NS` have network interfaces, we can attach IP to them
+> **NOTE**: Add IPs with some network mask only!!!
+```
+# ip netns exec <NS NAME> ip addr add <IP> dev <INTERF>
+ip netns exec red ip addr add 192.168.15.1/24 dev veth-red
+ip netns exec blue ip addr add 192.168.15.2/24 dev veth-blue
+```
+
+Set both newly configured links up 
+```
+# On the host
+ip link set veth-red-brdg up
+ip link set veth-blue-brdg up
+
+# Within NS
+#   ip netns exec <NS> ip link set <INTERF> up
+ip netns exec red ip link set veth-red up
+ip netns exec blue ip link set veth-blue up
+```
+
+Now each `network NS` has links in UP
+```
+ip netns exec red ip addr
+   1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN group default qlen 1000
+       link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+   12: veth-red@if11: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+       link/ether 3e:e9:d8:e1:a7:ab brd ff:ff:ff:ff:ff:ff link-netnsid 0
+       inet 192.168.15.1/24 scope global veth-red
+          valid_lft forever preferred_lft forever
+       inet6 fe80::3ce9:d8ff:fee1:a7ab/64 scope link 
+          valid_lft forever preferred_lft forever
+
+ip netns exec blue ip addr
+   1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN group default qlen 1000
+       link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+   10: veth-blue@if9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+       link/ether c6:a5:d6:8e:fb:31 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+       inet 192.168.15.2/24 scope global veth-blue
+          valid_lft forever preferred_lft forever
+       inet6 fe80::c4a5:d6ff:fe8e:fb31/64 scope link 
+          valid_lft forever preferred_lft forever
+```
+
+Now, you can ping each other NS
+```
+# red -> blue
+ip netns exec red ping 192.168.15.2
+
+# blue -> red
+ip netns exec blue ping 192.168.15.1
+```
+
+Pay attention, that now both NS have `arp` info, which is 1) exist 2) differs from host
+```
+# host
+arp
+   Address                  HWtype  HWaddress           Flags Mask            Iface
+   ip-172-31-0-2.eu-centra  ether   0a:3c:ef:0b:8c:36   C                     eth0
+   ip-172-31-0-1.eu-centra  ether   0a:3c:ef:0b:8c:36   C                     eth0
+
+# red
+ip netns exec red arp
+   Address                  HWtype  HWaddress           Flags Mask            Iface
+   192.168.15.2             ether   66:10:01:d8:0a:c7   C                     veth-red
+
+# blue
+ip netns exec blue arp
+   Address                  HWtype  HWaddress           Flags Mask            Iface
+   192.168.15.1             ether   22:25:1f:70:a9:aa   C                     veth-blue
+```
+
+Yes, we now have network connectivity betwee `red` and `blue` NS.
+
+
+
+
 
 
 
