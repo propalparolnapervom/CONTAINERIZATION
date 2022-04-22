@@ -12,7 +12,7 @@ Within a `network NS`, it can have its own:
 - arp table
 
 
-# Network NS: Create
+# 1. Network NS: Create
 
 Create 2 network NS: `red` and `blue`
 ```
@@ -73,7 +73,7 @@ As you can see, from within a `network NS` it's not possible to see current `hos
 That's becase `network NS` has its own network environment, which is empty (unconfigured) as of now.
 
 
-# Network NS: Configure Network Connectivity
+# 2. Network NS: Configure Network Connectivity
 
 As of now, `network NS` `red` and `blue` don't have network connectivity:
 - between themselves;
@@ -81,7 +81,7 @@ As of now, `network NS` `red` and `blue` don't have network connectivity:
 - between them and internet.
 
 
-## Config Net Connectivity: Between 2 NS Only (not recommended)
+## 2.1. Config Net Connectivity: Between 2 NS Only (NOT RECOMMENDED)
 
 > **NOTE**: This is not recommended way, as it only connects 2 NS.
 > 
@@ -200,7 +200,11 @@ But what if there are a lot of such `network NS` (containers)?
 Like in a real world, they should be connected to a `private network`.
 
 
-## Config Net Connectivity: Between Many NS (recommended)
+
+
+## 2.2. Config Net Connectivity: NS <-> NS (RECOMMENDED)
+
+> **NOTE**: The `bridge network` is used as a `switch` to connect many NS, instead of direct connection between 2 NS.
 
 So we have many `network NS`, that should be connected into `private network`.
 
@@ -252,7 +256,6 @@ ip link add veth-red type veth peer name veth-red-brdg
 # NS blue <-> bridge network
 ip link add veth-blue type veth peer name veth-blue-brdg
 ```
-
 
 
 Use `virtual cable` to attach `red` NS to `bridge network`
@@ -331,6 +334,23 @@ ip netns exec blue ip addr
           valid_lft forever preferred_lft forever
 ```
 
+
+Check the policy for `FORWARD` chain within `iptables`
+```
+# If it's DROP for FORWARD chain
+iptables -L | grep policy
+   Chain INPUT (policy ACCEPT)
+   Chain FORWARD (policy DROP)
+   Chain OUTPUT (policy ACCEPT)
+
+# Make it ACCEPT
+iptables --policy FORWARD ACCEPT
+
+# Check again
+iptables -L | grep policy
+```
+
+
 Now, you can ping each other NS
 ```
 # red -> blue
@@ -339,6 +359,7 @@ ip netns exec red ping 192.168.15.2
 # blue -> red
 ip netns exec blue ping 192.168.15.1
 ```
+
 
 Pay attention, that now both NS have `arp` info, which is 1) exist 2) differs from host
 ```
@@ -359,19 +380,72 @@ ip netns exec blue arp
    192.168.15.1             ether   22:25:1f:70:a9:aa   C                     veth-blue
 ```
 
-Yes, we now have network connectivity betwee `red` and `blue` NS.
+
+## 2.3. Config Net Connectivity: NS <-> Host
 
 
+Yes, now we have network connectivity between `red` and `blue` NS.
 
+But they are in the `private network`, which is not reachable for `host`.
 
-To be able to reach private network from host
+To be able to reach the `private network` from `host` we can assign IP for the interface, as it is present both within `host` and `private network` 
 ```
 ip addr add 192.168.15.3/24 dev v-net-0
 ```
 
-We can now ping NS `blue` from a `host`
+We can now ping NS and `host`
 ```
+# host -> blue
 ping 192.168.15.2
+
+# blue -> host
+ip netns exec blue ping 192.168.15.3
+```
+
+
+
+## 2.4. Config Net Connectivity: NS <-> Internet
+
+Yes, now we have network connectivity between NS and `host`.
+
+But Internet is still unreachable from the NS.
+```
+ip netns exec red ping 8.8.8.8
+
+   connect: Network is unreachable
+```
+
+The Internet available from the `host`, tho.
+
+Thus, route table within each NS must point to the GW, from which Internet is reachable.
+```
+# Add default GW to all NS, that will point to the IP which is:
+#    - real interface on the host
+#    - within bridge private network
+ip netns exec red ip route add default via 192.168.15.3
+ip netns exec blue ip route add default via 192.168.15.3
+```
+
+But it's still not enough: network is no longer "unreachable", but there's still time out.
+```
+ip netns exec red ping 8.8.8.8
+
+
+```
+
+That's because when you try to reach external network from your private network, external network doesn't know your private adresses.
+
+The `NAT` should be used between `private network` and `external network` in order to let external network know, where to send responces.
+
+Thus, enable `NAT` on the `host` for your `private network`, which is `bridge network`.
+```
+iptables -t nat -A POSTROUTING -s 192.168.15.0/24 -j MASQUERADE
+```
+
+Now Internet is reachable from the both NS.
+```
+ip netns exec red ping 8.8.8.8
+ip netns exec blue ping 8.8.8.8
 ```
 
 
@@ -379,36 +453,29 @@ ping 192.168.15.2
 
 
 
-Create a bridge network
-```
-# ip link add <BRIDGE_NETWORK_NAME> type bridge
-ip link add v-net-0 type bridge
-```
-
-Bring it up
-```
-ip link set dev v-net-0 up
-```
-
-Assign Network CIDR to the Bridge Network
-```
-ip addr add 10.244.1.1/24 dev v-net-0
-```
-
-To attach a network NS (where container is created) to the bridge, we need somethin like pipe: 1 end within a bridge network, 1 end is a container
-
-```
-# Create veth pair
-ip link add ...
-
-# Attach 1 end to the container
-ip link set ...
-
-# Attach other end to the Bridge network
-ip link set ...
 
 
-# Assign IP address
-ip -n <namespace> addr add
-ip -n <namespace> route add
-```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
