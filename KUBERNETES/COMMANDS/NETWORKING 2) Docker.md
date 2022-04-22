@@ -67,10 +67,7 @@ By default, the `bridge network` created by Docker is `172.17.0.0`
 
 
 
-# Bridge Network
-
-
-## How Created
+# How Created: Bridge Network
 
 When Docker is installed, it creates 3 types of network - `bridge` among them
 ```
@@ -114,6 +111,10 @@ ip add show docker0
          valid_lft forever preferred_lft forever
 ```
 
+
+# How Created: NS
+
+## NS Creation
 
 Whenever a `container` is created, Docker creates a NS for it.
 > **NOTE**: Some additional steps must be done for each new container to make NS created by Docker visible to `ip` tool
@@ -173,7 +174,23 @@ ip netns exec ${CONTAINER_ID} route
   172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 eth0
 ```
 
-See its 
+
+## NS Attachment to the Bridge Network
+
+> **NOTE**: In this context, `network NS` = `container`
+
+
+As we saw it within `Network Namespaces` block, a `virtual cable` has to be created for the start.
+
+Here its one end, attached to the `bridge network`:
+```
+ip link
+
+  ...
+  14: **veth5a39484@if13**: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP mode DEFAULT group default 
+      link/ether 16:51:93:be:52:b9 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+  ...
+```
 
 
 
