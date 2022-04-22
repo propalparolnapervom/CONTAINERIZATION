@@ -228,6 +228,11 @@ ip link add v-net-0 type bridge
 
 # Bring it up
 ip link set dev v-net-0 up
+
+# Check the bridge network, no interfaces so far
+brctl show
+   bridge name	bridge id		STP enabled	interfaces
+   v-net-0		8000.000000000000	no
 ```
 
 > **NOTE**: 
@@ -238,13 +243,7 @@ ip link set dev v-net-0 up
 
 Now we have to connect `network NS` to this interface/switch (`bridge network`).
 
-We have to use `virtual cables` again.
-
-Delete already existing `virtual cable`, created earlier to connect 2 NS (if any).
-```
-# If you delete 1 end of virtual cable, the cable is deleted
-ip netns exec red ip link delete veth-red
-```
+We have to use `virtual cables`.
 
 Create `virtual cable` with 2 interfaces on its ends, between each NS and `bridge network`.
 ```
@@ -274,6 +273,14 @@ ip link set veth-blue netns blue
 
 # ip link set <NAME OF INTERF ON CABLE END #2> master <BRIDGE NETWORK (NEW INTERF ON HOST)>
 ip link set veth-blue-brdg master v-net-0
+```
+
+Check that `bridge network` now has 2 interfaces attached
+```
+# Check the bridge network, no interfaces so far
+brctl show
+   bridge name	bridge id		STP enabled	interfaces
+   v-net-0		8000.000000000000	no
 ```
 
 Now you can see attached interfaces within each `network NS`
