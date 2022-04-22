@@ -184,20 +184,111 @@ As we saw it within `Network Namespaces` block, a `virtual cable` has to be crea
 
 Here its one end, attached to the `bridge network`:
 ```
+# 1st end of `virtual cabel`, on `bridge network`
 ip link
-
   ...
   14: **veth5a39484@if13**: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP mode DEFAULT group default 
       link/ether 16:51:93:be:52:b9 brd ff:ff:ff:ff:ff:ff link-netnsid 0
   ...
+
+# 2nd end of `virtual cabel`, on `container`
+ip netns exec ${CONTAINER_ID} ip link
+  ...
+  13: **eth0@if14**: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default 
+      link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+  ...
+  
+  
+# P.S. Here you can even see the IP, assigned to the container
+ip netns exec ${CONTAINER_ID} ip addr
+  ...
+  13: eth0@if14: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+      link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+      inet **172.17.0.2**/16 brd 172.17.255.255 scope global eth0
+         valid_lft forever preferred_lft forever
+  ...
 ```
 
 
+## NS Port Forwarding
 
+So all `containers` started on the same `host`, are running within a `private network` with help of `bridge network`.
 
+Let assume all of them are running `nginx`
+```
+docker run nginx
+```
 
+It is available from within a private network
+```
+# curl http://<PRIVATE-IP-OF-POD>:<POD-PORT>
 
+# From another container (part of bridge network)
+curl http://172.17.0.2:80
 
+# From host (part of bridge network)
+curl http://172.17.0.2:80
+```
+
+But it's not available from the outside
+```
+# curl http://<PUBLIC-IP-OF-HOST-WHERE-POD-IS-RUNNING>:<POD-PORT>
+
+# It's not available from outside of the host server
+curl http://3.71.33.236:80
+  curl: (7) Failed to connect to 3.71.33.236 port 80: Connection refused
+
+# There's nothing on the `host`, listening to port 80
+netstat -tulpn | grep :80
+```
+
+Docker has a command, which maps `pod port` to `host port`
+```
+# docker run -p <HOST-PORT-MAPPED-TO-POD-PORT>:<POD-PORT> nginx
+docker run -p 8080:80 nginx
+```
+
+Now the Pod available outside, via `host` port
+```
+# curl http://<PUBLIC-IP-OF-HOST-WHERE-POD-IS-RUNNING>:<HOST-PORT>
+curl http://3.71.33.236:8080
+
+# There's a process listening to `host` port
+netstat -tulpn | grep :8080
+  tcp        0      0 0.0.0.0:8080            0.0.0.0:*               LISTEN      3504/docker-proxy   
+  tcp6       0      0 :::8080                 :::*                    LISTEN      3510/docker-proxy
+```
+
+But what Docker did under the hood?
+
+It added `iptables` rule, that forwards traffic on the `host`: `<HOST-PORT>` -> `<PRIVATE-IP-OF-POD>:<POD-PORT>`
+```
+# iptables \
+# -t nat \
+# -A DOCKER \
+# -j DNAT \
+# -p tcp \
+# --dport <HOST-PORT> \
+# --to-destination <PRIVATE-IP-OF-POD>:<POD-PORT>
+
+iptables \
+-t nat \
+-A DOCKER \
+-j DNAT \
+-p tcp \
+--dport 8080 \
+--to-destination 172.17.0.3:80
+```
+
+You can see the `iptables` rule, created by Docker, in the list of `iptables` rules
+```
+iptables -nvL -t nat
+
+  Chain DOCKER (2 references)
+   pkts bytes target     prot opt in     out     source               destination         
+      0     0 RETURN     all  --  docker0 *       0.0.0.0/0            0.0.0.0/0           
+      0     0 DNAT       tcp  --  !docker0 *       0.0.0.0/0            0.0.0.0/0            **tcp dpt:8080 to:172.17.0.3:80**
+```
 
 
 
