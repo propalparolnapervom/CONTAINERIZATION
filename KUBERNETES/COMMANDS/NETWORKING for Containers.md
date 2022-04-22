@@ -364,6 +364,15 @@ Yes, we now have network connectivity betwee `red` and `blue` NS.
 
 
 
+To be able to reach private network from host
+```
+ip addr add 192.168.15.3/24 dev v-net-0
+```
+
+We can now ping NS `blue` from a `host`
+```
+ping 192.168.15.2
+```
 
 
 
