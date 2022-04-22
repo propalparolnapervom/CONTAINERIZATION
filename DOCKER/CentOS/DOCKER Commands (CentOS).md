@@ -61,6 +61,17 @@ ps -ef | grep docker
 ```
 
 
+## OS
+
+### PID
+
+Find PID on the `host` level of the specic `container`
+```
+# docker inspect <CONTAINER ID> -f '{{.State.Pid}}'
+docker inspect a9646ae75a4a -f '{{.State.Pid}}'
+```
+
+
 
 ## IMAGES
 
@@ -330,7 +341,9 @@ docker run -p 2020:80 prakhar1989/static-site
 [Networking Docs](https://docs.docker.com/network/)
 
 
-**View available networks**
+### List
+
+View available networks
 ```
       #In this example 3 networks shown that are created automatically during Docker installation process
       
@@ -343,29 +356,71 @@ docker network ls
       3db803a66f6d        none                null                local
 ```
 
-
-**Display detailed information on network**
-
 Show info regarding `bridge` network
 ```
 docker network inspect bridge
 ```
 
-**Create a new network**
+### Find NS on Host level
+
+[Explanation](https://www.baeldung.com/linux/docker-network-namespace-invisible)
+[Steps](https://www.thegeekdiary.com/how-to-access-docker-containers-network-namespace-from-host/)
+
+When container is created by Docker, a NS is created on the Host level. 
+
+But it's not listed by `ip` tool by default
+```
+# Start container in one tab
+docker run nginx
+
+# Try to see new network namespaces in other tab
+ip netns
+```
+
+That's becase Docker daemon doesn’t create a reference of the network namespace file in the `/var/run/netns` directory after the creation. Therefore, `ip netns ls` cannot resolve the network namespace file (as it expects it there).
+
+Instead the file of the container process contains this info (`/proc/<PID>/ns/net`).
+
+Thus, we can add a symlink of real files to the dir, which `ip` tool is looking to.
+
+```
+# Find the ID of the container
+docker ps
+CONTAINER_ID="a9646ae75a4a"
+
+# Get PID of the container's process on the Host level
+PID_OF_CONTAINER_PROCESS=$(docker inspect -f '{{.State.Pid}}' ${CONTAINER_ID}) && echo ${PID_OF_CONTAINER_PROCESS}
+
+# Create netns directory, which `ip` tool is looking to
+mkdir -p /var/run/netns/
+
+# Create the namespace softlink
+ln -sfT /proc/${PID_OF_CONTAINER_PROCESS}/ns/net /var/run/netns/${CONTAINER_ID}
+```
+
+As `ip` tool now has access to the correct locations for the `container` NS files, it works:
+```
+ip netns
+
+ip netns exec ${CONTAINER_ID} ip addr
+```
+
+
+### Create
 
 Create a new bridge network
 ```
 docker network create my_first_network
 ```
 
-**Remove network**
+### Remove
 
 Remove specific network
 ```
 docker network rm foodtrucks
 ```
 
-**Run a container in specific network**
+### Other
 
 Run `ppnp/my_first_image` container in `my_first_network` network via `--net` key
 ```
