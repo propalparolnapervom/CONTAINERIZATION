@@ -257,17 +257,23 @@ ip link add veth-blue type veth peer name veth-blue-brdg
 ```
 
 
-Use `virtual cable` to attach `red` NS to `bridge network`
+Use `virtual cable` to attach NS to `bridge network`
 ```
+#############################
+# NS red <-> bridge network
+#############################
+
 # ip link set <NAME OF INTERF ON CABLE END #1> netns <NS `red`>
 ip link set veth-red netns red
 
 # ip link set <NAME OF INTERF ON CABLE END #2> master <BRIDGE NETWORK (NEW INTERF ON HOST)>
 ip link set veth-red-brdg master v-net-0
-```
 
-Use `virtual cable` to attach `blue` NS to `bridge network`
-```
+
+#############################
+# NS blue <-> bridge network
+#############################
+
 # ip link set <NAME OF INTERF ON CABLE END #1> netns <NS `blue`>
 ip link set veth-blue netns blue
 
@@ -275,15 +281,19 @@ ip link set veth-blue netns blue
 ip link set veth-blue-brdg master v-net-0
 ```
 
+
 Check that `bridge network` now has 2 interfaces attached
 ```
 # Check the bridge network, no interfaces so far
 brctl show
-   bridge name	bridge id		STP enabled	interfaces
-   v-net-0		8000.000000000000	no
+
+   bridge name	bridge id		   STP enabled	  interfaces
+   docker0		8000.02420e7e6456	no		
+   v-net-0		8000.2ea1e41a9519	no		        veth-blue-brdg
+                                               veth-red-brdg
 ```
 
-Now you can see attached interfaces within each `network NS`
+Check that NS now has interface attached
 ```
 ip netns exec red ip link 
    1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
