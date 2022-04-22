@@ -179,12 +179,40 @@ ip netns exec red ping www.google.com
 ip -n red link
 ```
 
+## Bridge Network
+
+### Show
+
+List created bridge networks
+```
+brctl show
+
+   bridge name	bridge id		STP enabled	interfaces
+   docker0		8000.024213ad80c9	no		
+   v-net-0		8000.82749b1b67b0	no		veth-blue-brdg
+                        veth-red-brdg
+```
 
 
+## iptables
 
+### Show 
 
+List current chains
+```
+iptables -L | grep policy
 
+   Chain INPUT (policy ACCEPT)
+   Chain FORWARD (policy DROP)
+   Chain OUTPUT (policy ACCEPT)
+```
 
+### Update
+
+Set new policy (`ACCEPT`) for `FORWARD` chain
+```
+iptables --policy FORWARD ACCEPT
+```
 
 
 
