@@ -400,10 +400,14 @@ ip netns exec blue arp
 
 ## 2.3. Config Net Connectivity: NS <-> Host
 
+Yes, now we have network connectivity between `red` and `blue` NS via `bridge network`.
 
-Yes, now we have network connectivity between `red` and `blue` NS.
+But all of them form `private network`, which is not reachable for `host`.
 
-But they are in the `private network`, which is not reachable for `host`.
+```
+# host -> blue
+ping 192.168.15.2
+```
 
 To be able to reach the `private network` from `host` we can assign IP for the interface, as it is present both within `host` and `private network` 
 ```
