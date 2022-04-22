@@ -1,7 +1,4 @@
 
-
-# Container Network
-
 # Overall
 
 When `container` is created, it's placed to the `network namespace`, so it doesn't see other network info on the `host`.
