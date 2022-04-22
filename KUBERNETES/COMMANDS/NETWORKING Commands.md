@@ -207,6 +207,11 @@ iptables -L | grep policy
    Chain OUTPUT (policy ACCEPT)
 ```
 
+List current rules
+```
+iptables -nvL -t nat
+```
+
 ### Update
 
 Set new policy (`ACCEPT`) for `FORWARD` chain
