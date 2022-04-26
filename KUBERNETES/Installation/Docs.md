@@ -12,16 +12,6 @@
 
 
 
-# LOCAL-MACHINE SOLUTIONS
-
-[Local-machine solutions](https://kubernetes.io/docs/setup/pick-right-solution/#local-machine-solutions)
-
-
-
-# HOSTED SOLUTIONS
-
-[Hosted solutions](https://kubernetes.io/docs/setup/pick-right-solution/#hosted-solutions)
-
 
 
 
