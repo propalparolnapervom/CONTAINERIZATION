@@ -734,6 +734,8 @@ kubectl describe clusterrolebinding -n kube-system view
 
 # Check Access
 
+## For user
+
 To see, if **your current** user can do specific actions
 ```
 kubectl auth can-i create deployments
@@ -748,6 +750,13 @@ kubectl auth can-i create deployments --as dev-user
 kubectl auth can-i create pods --namespace test --as dev-user
 ```
 
+## For service account
+
+To see, if `processor` service account from `project-hamster` namespace can create secrets
+```
+kubectl auth can-i create secret \
+  --as system:serviceaccount:project-hamster:processor
+```
 
 # TAINT AND TOLERATIONS
 
